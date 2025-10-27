@@ -20,12 +20,12 @@ const templates: Template[] = [
         schema: [
             { id: crypto.randomUUID(), name: 'id', type: 'uuid', required: true },
             { id: crypto.randomUUID(), name: 'username', type: 'string', required: true },
-            { id: crypto.randomUUID(), name: 'email', type: 'email', required: true },
-            { id: crypto.randomUUID(), name: 'fullName', type: 'name', required: true },
-            { id: crypto.randomUUID(), name: 'phone', type: 'phone', required: false },
-            { id: crypto.randomUUID(), name: 'address', type: 'address', required: false },
+            { id: crypto.randomUUID(), name: 'email', type: 'string', required: true },
+            { id: crypto.randomUUID(), name: 'fullName', type: 'string', required: true },
+            { id: crypto.randomUUID(), name: 'phone', type: 'string', required: false },
+            { id: crypto.randomUUID(), name: 'address', type: 'string', required: false },
             { id: crypto.randomUUID(), name: 'isActive', type: 'boolean', required: true },
-            { id: crypto.randomUUID(), name: 'createdAt', type: 'datetime', required: true },
+            { id: crypto.randomUUID(), name: 'createdAt', type: 'date', required: true },
         ],
     },
     {
@@ -35,7 +35,7 @@ const templates: Template[] = [
         schema: [
             { id: crypto.randomUUID(), name: 'id', type: 'uuid', required: true },
             { id: crypto.randomUUID(), name: 'name', type: 'string', required: true },
-            { id: crypto.randomUUID(), name: 'description', type: 'text', required: true },
+            { id: crypto.randomUUID(), name: 'description', type: 'string', required: true },
             {
                 id: crypto.randomUUID(),
                 name: 'price',
@@ -78,8 +78,8 @@ const templates: Template[] = [
             { id: crypto.randomUUID(), name: 'id', type: 'uuid', required: true },
             { id: crypto.randomUUID(), name: 'title', type: 'string', required: true },
             { id: crypto.randomUUID(), name: 'slug', type: 'string', required: true },
-            { id: crypto.randomUUID(), name: 'content', type: 'text', required: true },
-            { id: crypto.randomUUID(), name: 'author', type: 'name', required: true },
+            { id: crypto.randomUUID(), name: 'content', type: 'string', required: true },
+            { id: crypto.randomUUID(), name: 'author', type: 'string', required: true },
             {
                 id: crypto.randomUUID(),
                 name: 'status',
@@ -103,7 +103,7 @@ const templates: Template[] = [
                 min: 0,
                 max: 10000,
             },
-            { id: crypto.randomUUID(), name: 'publishedAt', type: 'datetime', required: true },
+            { id: crypto.randomUUID(), name: 'publishedAt', type: 'date', required: true },
         ],
     },
     {
@@ -113,11 +113,11 @@ const templates: Template[] = [
         schema: [
             { id: crypto.randomUUID(), name: 'id', type: 'uuid', required: true },
             { id: crypto.randomUUID(), name: 'title', type: 'string', required: true },
-            { id: crypto.randomUUID(), name: 'description', type: 'text', required: true },
-            { id: crypto.randomUUID(), name: 'location', type: 'address', required: false },
-            { id: crypto.randomUUID(), name: 'organizer', type: 'name', required: true },
-            { id: crypto.randomUUID(), name: 'startDate', type: 'datetime', required: true },
-            { id: crypto.randomUUID(), name: 'endDate', type: 'datetime', required: true },
+            { id: crypto.randomUUID(), name: 'description', type: 'string', required: true },
+            { id: crypto.randomUUID(), name: 'location', type: 'string', required: false },
+            { id: crypto.randomUUID(), name: 'organizer', type: 'string', required: true },
+            { id: crypto.randomUUID(), name: 'startDate', type: 'date', required: true },
+            { id: crypto.randomUUID(), name: 'endDate', type: 'date', required: true },
             {
                 id: crypto.randomUUID(),
                 name: 'type',
@@ -141,11 +141,11 @@ const templates: Template[] = [
         icon: <Database className="w-5 h-5" />,
         schema: [
             { id: crypto.randomUUID(), name: 'id', type: 'uuid', required: true },
-            { id: crypto.randomUUID(), name: 'name', type: 'company', required: true },
-            { id: crypto.randomUUID(), name: 'website', type: 'url', required: true },
-            { id: crypto.randomUUID(), name: 'email', type: 'email', required: true },
-            { id: crypto.randomUUID(), name: 'phone', type: 'phone', required: true },
-            { id: crypto.randomUUID(), name: 'address', type: 'address', required: true },
+            { id: crypto.randomUUID(), name: 'name', type: 'string', required: true },
+            { id: crypto.randomUUID(), name: 'website', type: 'string', required: true },
+            { id: crypto.randomUUID(), name: 'email', type: 'string', required: true },
+            { id: crypto.randomUUID(), name: 'phone', type: 'string', required: true },
+            { id: crypto.randomUUID(), name: 'address', type: 'string', required: true },
             {
                 id: crypto.randomUUID(),
                 name: 'industry',

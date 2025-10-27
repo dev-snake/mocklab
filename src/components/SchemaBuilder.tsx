@@ -22,23 +22,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/componen
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from 'sonner';
 
-const fieldTypes: FieldType[] = [
-    'string',
-    'number',
-    'boolean',
-    'email',
-    'url',
-    'date',
-    'datetime',
-    'uuid',
-    'phone',
-    'name',
-    'address',
-    'company',
-    'text',
-    'enum',
-    'array',
-];
+const fieldTypes: FieldType[] = ['string', 'number', 'boolean', 'date', 'uuid', 'enum', 'array'];
 
 export const SchemaBuilder = () => {
     const { t } = useTranslation();
