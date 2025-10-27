@@ -82,14 +82,18 @@ export const GeneratorOptions = () => {
                             setGeneratorOptions({ type: value as GeneratorType })
                         }
                     >
-                        <SelectTrigger className="w-full">
+                        <SelectTrigger className="w-full rounded-none">
                             <SelectValue placeholder={t('generatorOptions.generatorType')} />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="rounded-none">
                             <SelectGroup>
                                 <SelectLabel>{t('generatorOptions.generatorType')}</SelectLabel>
                                 {generatorTypesWithTranslation.map((type) => (
-                                    <SelectItem key={type.value} value={type.value}>
+                                    <SelectItem
+                                        key={type.value}
+                                        value={type.value}
+                                        className="rounded-none"
+                                    >
                                         {type.icon} {type.label}
                                     </SelectItem>
                                 ))}
@@ -112,6 +116,7 @@ export const GeneratorOptions = () => {
                         type="number"
                         min="1"
                         max="1000"
+                        className="rounded-none"
                         placeholder={t('generatorOptions.countPlaceholder')}
                         value={generatorOptions.count}
                         onChange={(e) =>
@@ -127,17 +132,29 @@ export const GeneratorOptions = () => {
             <Separator />
 
             <div className="flex gap-2">
-                <Button onClick={handleGenerate} className="flex-1" disabled={schema.length === 0}>
+                <Button
+                    onClick={handleGenerate}
+                    className="flex-1 rounded-none hover:cursor-pointer"
+                    disabled={schema.length === 0}
+                >
                     <Wand2 className="w-4 h-4 mr-2" />
                     {t('generatorOptions.generateData')}
                 </Button>
 
                 {generatedData.length > 0 && (
                     <>
-                        <Button variant="outline" onClick={handleGenerate}>
+                        <Button
+                            variant="outline"
+                            className="rounded-none hover:cursor-pointer"
+                            onClick={handleGenerate}
+                        >
                             <RefreshCw className="w-4 h-4" />
                         </Button>
-                        <Button variant="outline" onClick={clearData}>
+                        <Button
+                            variant="outline"
+                            className="rounded-none hover:cursor-pointer"
+                            onClick={clearData}
+                        >
                             <Trash2 className="w-4 h-4" />
                         </Button>
                     </>
@@ -147,15 +164,15 @@ export const GeneratorOptions = () => {
             {/* Quick Stats */}
             {generatedData.length > 0 && (
                 <div className="grid grid-cols-3 gap-2 pt-2">
-                    <div className="text-center p-2 bg-primary/5 rounded">
+                    <div className="text-center p-2 bg-primary/5 rounded-none select-none">
                         <div className="text-lg font-bold">{generatedData.length}</div>
                         <div className="text-xs text-muted-foreground">Records</div>
                     </div>
-                    <div className="text-center p-2 bg-primary/5 rounded">
+                    <div className="text-center p-2 bg-primary/5 rounded-none select-none">
                         <div className="text-lg font-bold">{schema.length}</div>
                         <div className="text-xs text-muted-foreground">Fields</div>
                     </div>
-                    <div className="text-center p-2 bg-primary/5 rounded">
+                    <div className="text-center p-2 bg-primary/5 rounded-none select-none">
                         <div className="text-lg font-bold">
                             {(JSON.stringify(generatedData).length / 1024).toFixed(1)}KB
                         </div>

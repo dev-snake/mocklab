@@ -19,6 +19,7 @@ import { useMockStore } from '@/stores/mockStore';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { SchemaTemplates } from './SchemaTemplates';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 const fieldTypes: FieldType[] = [
     'string',
@@ -66,12 +67,13 @@ export const SchemaBuilder = () => {
                 <h2 className="text-lg font-semibold mb-4">{t('schemaBuilder.title')}</h2>
 
                 {/* Add Field Form */}
-                <div className="space-y-3 p-4 bg-muted/50 rounded-lg">
+                <div className="space-y-3 py-4">
                     <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-2">
                             <Label htmlFor="field-name">{t('schemaBuilder.fieldName')}</Label>
                             <Input
                                 id="field-name"
+                                className="rounded-none"
                                 placeholder={t('schemaBuilder.fieldNamePlaceholder')}
                                 value={editingField.name}
                                 onChange={(e) =>
@@ -90,14 +92,18 @@ export const SchemaBuilder = () => {
                                     setEditingField({ ...editingField, type: value as FieldType })
                                 }
                             >
-                                <SelectTrigger className="w-full">
+                                <SelectTrigger className="w-full rounded-none">
                                     <SelectValue placeholder={t('schemaBuilder.fieldType')} />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="rounded-none">
                                     <SelectGroup>
                                         <SelectLabel>{t('schemaBuilder.fieldType')}</SelectLabel>
                                         {fieldTypes.map((type) => (
-                                            <SelectItem key={type} value={type}>
+                                            <SelectItem
+                                                key={type}
+                                                value={type}
+                                                className="rounded-none"
+                                            >
                                                 {t(`fieldTypes.${type}`)}
                                             </SelectItem>
                                         ))}
@@ -114,6 +120,7 @@ export const SchemaBuilder = () => {
                                 <Input
                                     id="field-min"
                                     type="number"
+                                    className="rounded-none"
                                     placeholder="0"
                                     value={editingField.min ?? ''}
                                     onChange={(e) =>
@@ -129,6 +136,7 @@ export const SchemaBuilder = () => {
                                 <Input
                                     id="field-max"
                                     type="number"
+                                    className="rounded-none"
                                     placeholder="100"
                                     value={editingField.max ?? ''}
                                     onChange={(e) =>
@@ -147,6 +155,7 @@ export const SchemaBuilder = () => {
                             <Label htmlFor="field-enum">{t('schemaBuilder.enumValues')}</Label>
                             <Input
                                 id="field-enum"
+                                className="rounded-none"
                                 placeholder={t('schemaBuilder.enumPlaceholder')}
                                 value={editingField.enum?.join(',') ?? ''}
                                 onChange={(e) =>
@@ -177,12 +186,12 @@ export const SchemaBuilder = () => {
                                         })
                                     }
                                 >
-                                    <SelectTrigger className="w-full">
+                                    <SelectTrigger className="w-full rounded-none">
                                         <SelectValue
                                             placeholder={t('schemaBuilder.arrayItemType')}
                                         />
                                     </SelectTrigger>
-                                    <SelectContent>
+                                    <SelectContent className="rounded-none">
                                         <SelectGroup>
                                             <SelectLabel>
                                                 {t('schemaBuilder.arrayItemType')}
@@ -190,7 +199,11 @@ export const SchemaBuilder = () => {
                                             {fieldTypes
                                                 .filter((t) => t !== 'array' && t !== 'object')
                                                 .map((type) => (
-                                                    <SelectItem key={type} value={type}>
+                                                    <SelectItem
+                                                        key={type}
+                                                        value={type}
+                                                        className="rounded-none"
+                                                    >
                                                         {t(`fieldTypes.${type}`)}
                                                     </SelectItem>
                                                 ))}
@@ -205,6 +218,7 @@ export const SchemaBuilder = () => {
                                 <Input
                                     id="array-length"
                                     type="number"
+                                    className="rounded-none"
                                     placeholder="3"
                                     value={editingField.length ?? ''}
                                     onChange={(e) =>
@@ -221,6 +235,7 @@ export const SchemaBuilder = () => {
                     <div className="flex items-center space-x-2">
                         <Checkbox
                             id="field-required"
+                            className="rounded-none hover:cursor-pointer"
                             checked={editingField.required}
                             onCheckedChange={(checked) =>
                                 setEditingField({ ...editingField, required: checked as boolean })
@@ -229,7 +244,10 @@ export const SchemaBuilder = () => {
                         <Label htmlFor="field-required">{t('common.required')}</Label>
                     </div>
 
-                    <Button onClick={handleAddField} className="w-full">
+                    <Button
+                        onClick={handleAddField}
+                        className="w-full rounded-none hover:cursor-pointer"
+                    >
                         <Plus className="w-4 h-4 mr-2" />
                         {t('schemaBuilder.addField')}
                     </Button>
@@ -241,7 +259,7 @@ export const SchemaBuilder = () => {
                 {/* Field List */}
                 <ResizablePanel defaultSize={60} minSize={30}>
                     <ScrollArea className="h-full">
-                        <div className="p-4 space-y-2">
+                        <div className="p-4 space-y-2 ">
                             {schema.length === 0 ? (
                                 <div className="text-center py-8 text-muted-foreground">
                                     {t('schemaBuilder.noFields')}
@@ -250,7 +268,7 @@ export const SchemaBuilder = () => {
                                 schema.map((field) => (
                                     <div
                                         key={field.id}
-                                        className="flex items-center gap-2 p-3 bg-card border rounded-lg hover:bg-accent/50 transition-colors"
+                                        className="flex items-center gap-2 p-3 bg-card border rounded-none hover:bg-accent/50 transition-colors"
                                     >
                                         <GripVertical className="w-4 h-4 text-muted-foreground cursor-move" />
                                         <div className="flex-1 min-w-0">
@@ -278,10 +296,19 @@ export const SchemaBuilder = () => {
                                         </div>
                                         <Button
                                             variant="ghost"
-                                            size="sm"
+                                            size="icon"
+                                            className="hover:cursor-pointer"
                                             onClick={() => removeField(field.id)}
                                         >
-                                            <Trash2 className="w-4 h-4 text-destructive" />
+                                            <Tooltip>
+                                                <TooltipTrigger className="hover:cursor-pointer">
+                                                    {' '}
+                                                    <Trash2 className="w-4 h-4 text-destructive " />
+                                                </TooltipTrigger>
+                                                <TooltipContent className="rounded-none">
+                                                    Delete
+                                                </TooltipContent>
+                                            </Tooltip>
                                         </Button>
                                     </div>
                                 ))

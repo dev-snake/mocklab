@@ -111,7 +111,7 @@ export const DataPreview = () => {
                     <div className="flex gap-2">
                         <Button
                             variant="outline"
-                            className="hover:cursor-pointer"
+                            className="hover:cursor-pointer rounded-none"
                             size="sm"
                             onClick={handleCopy}
                         >
@@ -121,7 +121,7 @@ export const DataPreview = () => {
                         <Button
                             variant="outline"
                             size="sm"
-                            className="hover:cursor-pointer"
+                            className="hover:cursor-pointer rounded-none"
                             onClick={handleDownload}
                         >
                             <Download className="w-4 h-4 mr-2" />
@@ -137,20 +137,26 @@ export const DataPreview = () => {
                 className="flex-1 flex flex-col"
             >
                 <div className="border-b px-4 py-2">
-                    <TabsList>
-                        <TabsTrigger value="table" className="hover:cursor-pointer">
+                    <TabsList className="rounded-none">
+                        <TabsTrigger value="table" className="hover:cursor-pointer rounded-none">
                             <FileJson className="w-4 h-4 mr-2" />
                             {t('dataPreview.table')}
                         </TabsTrigger>
-                        <TabsTrigger value="json" className="hover:cursor-pointer">
+                        <TabsTrigger value="json" className="hover:cursor-pointer rounded-none">
                             <FileJson className="w-4 h-4 mr-2" />
                             {t('dataPreview.json')}
                         </TabsTrigger>
-                        <TabsTrigger value="typescript" className="hover:cursor-pointer">
+                        <TabsTrigger
+                            value="typescript"
+                            className="hover:cursor-pointer rounded-none"
+                        >
                             <FileCode className="w-4 h-4 mr-2" />
                             {t('dataPreview.typescript')}
                         </TabsTrigger>
-                        <TabsTrigger value="javascript" className="hover:cursor-pointer">
+                        <TabsTrigger
+                            value="javascript"
+                            className="hover:cursor-pointer rounded-none"
+                        >
                             <FileCode className="w-4 h-4 mr-2" />
                             {t('dataPreview.javascript')}
                         </TabsTrigger>

@@ -215,17 +215,17 @@ export const SchemaTemplates = () => {
     };
 
     return (
-        <div className="p-4 pt-3 border-t">
+        <div className="p-4 pt-3 ">
             <h3 className="text-sm font-semibold mb-3">{t('templates.title')}</h3>
             <ScrollArea className="h-[220px]">
                 <div className="space-y-2 pr-3">
                     {templatesWithTranslation.map((template) => (
                         <div
                             key={template.name}
-                            className="p-3 border rounded-lg hover:bg-accent/50 transition-colors"
+                            className="p-3 border rounded-none hover:bg-accent/50 transition-colors"
                         >
                             <div className="flex items-start gap-3">
-                                <div className="shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                                <div className="shrink-0 w-10 h-10 rounded-none bg-primary/5 flex items-center justify-center text-primary">
                                     {template.icon}
                                 </div>
                                 <div className="flex-1 min-w-0">
@@ -237,7 +237,7 @@ export const SchemaTemplates = () => {
                                         variant="outline"
                                         size="sm"
                                         onClick={() => handleUseTemplate(template)}
-                                        className="h-7 text-xs"
+                                        className="h-7 text-xs rounded-none hover:cursor-pointer"
                                     >
                                         Use Template
                                     </Button>

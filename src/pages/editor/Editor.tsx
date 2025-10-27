@@ -18,7 +18,7 @@ export const Editor = () => {
                 <ResizablePanelGroup direction="horizontal" className="min-h-0">
                     {/* Left Panel - Schema Builder */}
                     <ResizablePanel defaultSize={30} minSize={25} maxSize={50}>
-                        <div className="h-full border-r">
+                        <div className="h-full">
                             <SchemaBuilder />
                         </div>
                     </ResizablePanel>

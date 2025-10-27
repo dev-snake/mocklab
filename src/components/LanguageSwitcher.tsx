@@ -18,15 +18,15 @@ export const LanguageSwitcher = () => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon">
+                <Button variant="outline" size="icon" className="rounded-none hover:cursor-pointer">
                     <Languages className="h-4 w-4" />
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => changeLanguage('en')}>
+            <DropdownMenuContent align="end" className="rounded-none">
+                <DropdownMenuItem onClick={() => changeLanguage('en')} className="rounded-none">
                     🇺🇸 {t('language.english')}
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => changeLanguage('vi')}>
+                <DropdownMenuItem onClick={() => changeLanguage('vi')} className="rounded-none">
                     🇻🇳 {t('language.vietnamese')}
                 </DropdownMenuItem>
             </DropdownMenuContent>
