@@ -166,9 +166,8 @@ export const generateMockData = (schema: FieldSchema[], options: GeneratorOption
         const item: any = {};
 
         schema.forEach((field) => {
-            if (field.required !== false) {
-                item[field.name] = generateValue(field, options, i);
-            }
+            // Generate all fields, including optional ones
+            item[field.name] = generateValue(field, options, i);
         });
 
         result.push(item);
@@ -182,7 +181,7 @@ export const formatAsJSON = (data: any[]): string => {
     // Custom replacer to handle bigint and symbol
     const replacer = (_key: string, value: any) => {
         if (typeof value === 'bigint') {
-            return value.toString() + 'n'; // Add 'n' suffix to indicate bigint
+            return value.toString(); // Convert bigint to string
         }
         if (typeof value === 'symbol') {
             return value.toString(); // Convert symbol to string
@@ -276,7 +275,7 @@ export const formatAsTypeScript = (
         })
         .join('\n');
 
-    // For JSON serialization, convert bigint and symbol to string
+    // For JSON serialization, convert bigint and symbol to string using formatAsJSON
     const jsonData = JSON.parse(formatAsJSON(data));
 
     return `interface ${interfaceName} {\n${interfaceFields}\n}\n\nexport const mockData: ${interfaceName}[] = ${JSON.stringify(
@@ -287,7 +286,8 @@ export const formatAsTypeScript = (
 };
 
 export const formatAsJavaScript = (data: any[], variableName = 'mockData'): string => {
-    return `export const ${variableName} = ${JSON.stringify(data, null, 2)};`;
+    // Use formatAsJSON to properly serialize bigint/symbol
+    return `export const ${variableName} = ${formatAsJSON(data)};`;
 };
 
 // Create Zod schema from FieldSchema

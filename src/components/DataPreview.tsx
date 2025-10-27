@@ -201,7 +201,12 @@ export const DataPreview = () => {
                                                     </TableCell>
                                                     {Object.values(item).map((value: any, i) => (
                                                         <TableCell key={i}>
-                                                            {typeof value === 'object'
+                                                            {typeof value === 'bigint'
+                                                                ? value.toString()
+                                                                : typeof value === 'symbol'
+                                                                ? value.toString()
+                                                                : typeof value === 'object' &&
+                                                                  value !== null
                                                                 ? JSON.stringify(value)
                                                                 : String(value)}
                                                         </TableCell>
