@@ -1,0 +1,107 @@
+{
+    "translation": {
+        "common": {
+            "add": "Thêm",
+            "edit": "Sửa",
+            "delete": "Xóa",
+            "save": "Lưu",
+            "cancel": "Hủy",
+            "close": "Đóng",
+            "search": "Tìm kiếm",
+            "filter": "Lọc",
+            "required": "Bắt buộc",
+            "optional": "Tùy chọn",
+            "preview": "Xem trước",
+            "copy": "Sao chép",
+            "copied": "Đã sao chép!",
+            "generate": "Tạo dữ liệu",
+            "clear": "Xóa",
+            "reset": "Đặt lại"
+        },
+        "schemaBuilder": {
+            "title": "Xây dựng Schema",
+            "addField": "Thêm trường",
+            "fieldName": "Tên trường",
+            "fieldType": "Loại trường",
+            "fieldNamePlaceholder": "vd: username",
+            "noFields": "Chưa có trường nào. Tạo trường đầu tiên ở trên.",
+            "min": "Tối thiểu",
+            "max": "Tối đa",
+            "enumValues": "Giá trị Enum (phân cách bằng dấu phẩy)",
+            "enumPlaceholder": "hoạt động,chờ,không hoạt động",
+            "arrayItemType": "Kiểu phần tử mảng",
+            "arrayLength": "Độ dài mảng"
+        },
+        "fieldTypes": {
+            "string": "Chuỗi",
+            "number": "Số",
+            "boolean": "Boolean",
+            "email": "Email",
+            "url": "URL",
+            "date": "Ngày",
+            "datetime": "Ngày giờ",
+            "uuid": "UUID",
+            "phone": "Số điện thoại",
+            "name": "Tên",
+            "address": "Địa chỉ",
+            "company": "Công ty",
+            "text": "Văn bản",
+            "enum": "Enum",
+            "array": "Mảng"
+        },
+        "templates": {
+            "title": "Mẫu có sẵn",
+            "description": "Bắt đầu nhanh với schema có sẵn",
+            "userProfile": "Hồ sơ người dùng",
+            "userProfileDesc": "Schema thông tin người dùng cơ bản",
+            "ecommerce": "Sản phẩm thương mại điện tử",
+            "ecommerceDesc": "Schema danh sách sản phẩm",
+            "blogPost": "Bài viết blog",
+            "blogPostDesc": "Schema nội dung bài viết/blog",
+            "event": "Sự kiện/Lịch",
+            "eventDesc": "Schema thông tin sự kiện",
+            "company": "Công ty",
+            "companyDesc": "Schema thông tin doanh nghiệp"
+        },
+        "generatorOptions": {
+            "title": "Tùy chọn tạo dữ liệu",
+            "generatorType": "Loại generator",
+            "count": "Số lượng",
+            "countPlaceholder": "Số lượng items cần tạo",
+            "seed": "Seed (tùy chọn)",
+            "seedPlaceholder": "Để kết quả có thể tái tạo",
+            "generateData": "Tạo dữ liệu"
+        },
+        "generatorTypes": {
+            "random": "Ngẫu nhiên",
+            "randomDesc": "Dữ liệu hoàn toàn ngẫu nhiên",
+            "realistic": "Thực tế",
+            "realisticDesc": "Dữ liệu giả lập thực tế hơn",
+            "sequential": "Tuần tự",
+            "sequentialDesc": "ID tuần tự và dữ liệu có thể dự đoán",
+            "template": "Mẫu",
+            "templateDesc": "Sử dụng mẫu tùy chỉnh"
+        },
+        "dataPreview": {
+            "title": "Xem trước dữ liệu",
+            "table": "Bảng",
+            "json": "JSON",
+            "typescript": "TypeScript",
+            "javascript": "JavaScript",
+            "noData": "Chưa có dữ liệu",
+            "noDataDesc": "Cấu hình schema và nhấn 'Tạo dữ liệu' để xem kết quả.",
+            "download": "Tải xuống"
+        },
+        "messages": {
+            "generateSuccess": "Đã tạo thành công {{count}} items",
+            "copySuccess": "Đã sao chép vào clipboard",
+            "copyError": "Sao chép thất bại",
+            "fieldRequired": "Trường này là bắt buộc",
+            "invalidNumber": "Vui lòng nhập số hợp lệ"
+        },
+        "language": {
+            "english": "Tiếng Anh",
+            "vietnamese": "Tiếng Việt"
+        }
+    }
+}

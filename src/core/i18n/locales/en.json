@@ -1,0 +1,107 @@
+{
+    "translation": {
+        "common": {
+            "add": "Add",
+            "edit": "Edit",
+            "delete": "Delete",
+            "save": "Save",
+            "cancel": "Cancel",
+            "close": "Close",
+            "search": "Search",
+            "filter": "Filter",
+            "required": "Required",
+            "optional": "Optional",
+            "preview": "Preview",
+            "copy": "Copy",
+            "copied": "Copied!",
+            "generate": "Generate",
+            "clear": "Clear",
+            "reset": "Reset"
+        },
+        "schemaBuilder": {
+            "title": "Schema Builder",
+            "addField": "Add Field",
+            "fieldName": "Field Name",
+            "fieldType": "Field Type",
+            "fieldNamePlaceholder": "e.g., username",
+            "noFields": "No fields added yet. Create your first field above.",
+            "min": "Min",
+            "max": "Max",
+            "enumValues": "Enum Values (comma separated)",
+            "enumPlaceholder": "active,pending,inactive",
+            "arrayItemType": "Array Item Type",
+            "arrayLength": "Array Length"
+        },
+        "fieldTypes": {
+            "string": "String",
+            "number": "Number",
+            "boolean": "Boolean",
+            "email": "Email",
+            "url": "URL",
+            "date": "Date",
+            "datetime": "Date Time",
+            "uuid": "UUID",
+            "phone": "Phone",
+            "name": "Name",
+            "address": "Address",
+            "company": "Company",
+            "text": "Text",
+            "enum": "Enum",
+            "array": "Array"
+        },
+        "templates": {
+            "title": "Templates",
+            "description": "Quick start with predefined schemas",
+            "userProfile": "User Profile",
+            "userProfileDesc": "Basic user information schema",
+            "ecommerce": "E-commerce Product",
+            "ecommerceDesc": "Product listing schema",
+            "blogPost": "Blog Post",
+            "blogPostDesc": "Article/blog content schema",
+            "event": "Event/Calendar",
+            "eventDesc": "Event information schema",
+            "company": "Company",
+            "companyDesc": "Business information schema"
+        },
+        "generatorOptions": {
+            "title": "Generator Options",
+            "generatorType": "Generator Type",
+            "count": "Count",
+            "countPlaceholder": "Number of items to generate",
+            "seed": "Seed (optional)",
+            "seedPlaceholder": "For reproducible results",
+            "generateData": "Generate Data"
+        },
+        "generatorTypes": {
+            "random": "Random",
+            "randomDesc": "Completely random data",
+            "realistic": "Realistic",
+            "realisticDesc": "More realistic fake data",
+            "sequential": "Sequential",
+            "sequentialDesc": "Sequential IDs and predictable data",
+            "template": "Template",
+            "templateDesc": "Use custom templates"
+        },
+        "dataPreview": {
+            "title": "Data Preview",
+            "table": "Table",
+            "json": "JSON",
+            "typescript": "TypeScript",
+            "javascript": "JavaScript",
+            "noData": "No data generated yet",
+            "noDataDesc": "Configure your schema and click 'Generate Data' to see results.",
+            "download": "Download"
+        },
+        "messages": {
+            "generateSuccess": "Successfully generated {{count}} items",
+            "copySuccess": "Copied to clipboard",
+            "copyError": "Failed to copy",
+            "fieldRequired": "This field is required",
+            "invalidNumber": "Please enter a valid number"
+        },
+        "language": {
+            "english": "English",
+            "vietnamese": "Vietnamese"
+        }
+    }
+}
