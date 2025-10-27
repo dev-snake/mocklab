@@ -20,6 +20,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { SchemaTemplates } from './SchemaTemplates';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { toast } from 'sonner';
 
 const fieldTypes: FieldType[] = [
     'string',
@@ -48,9 +49,24 @@ export const SchemaBuilder = () => {
         type: 'string',
         required: true,
     });
+    const [enumInput, setEnumInput] = useState('');
 
     const handleAddField = () => {
         if (!editingField.name) return;
+
+        // Check for duplicate field names
+        const isDuplicate = schema.some(
+            (field) => field.name.toLowerCase() === editingField.name!.toLowerCase()
+        );
+
+        if (isDuplicate) {
+            toast(t('messages.duplicateField') || 'Field name already exists!', {
+                position: 'top-center',
+                icon: <Trash2 className="w-5 h-5 text-destructive" />,
+                className: 'rounded-none border-none',
+            });
+            return;
+        }
 
         addField(editingField as FieldSchema);
         setEditingField({
@@ -59,6 +75,7 @@ export const SchemaBuilder = () => {
             type: 'string',
             required: true,
         });
+        setEnumInput('');
     };
 
     return (
@@ -88,9 +105,13 @@ export const SchemaBuilder = () => {
                             <Label htmlFor="field-type">{t('schemaBuilder.fieldType')}</Label>
                             <Select
                                 value={editingField.type}
-                                onValueChange={(value) =>
-                                    setEditingField({ ...editingField, type: value as FieldType })
-                                }
+                                onValueChange={(value) => {
+                                    setEditingField({ ...editingField, type: value as FieldType });
+                                    // Reset enum input when changing type
+                                    if (value !== 'enum') {
+                                        setEnumInput('');
+                                    }
+                                }}
                             >
                                 <SelectTrigger className="w-full rounded-none">
                                     <SelectValue placeholder={t('schemaBuilder.fieldType')} />
@@ -104,7 +125,7 @@ export const SchemaBuilder = () => {
                                                 value={type}
                                                 className="rounded-none"
                                             >
-                                                {t(`fieldTypes.${type}`)}
+                                                {type}
                                             </SelectItem>
                                         ))}
                                     </SelectGroup>
@@ -157,16 +178,18 @@ export const SchemaBuilder = () => {
                                 id="field-enum"
                                 className="rounded-none"
                                 placeholder={t('schemaBuilder.enumPlaceholder')}
-                                value={editingField.enum?.join(',') ?? ''}
-                                onChange={(e) =>
+                                value={enumInput}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setEnumInput(value);
                                     setEditingField({
                                         ...editingField,
-                                        enum: e.target.value
+                                        enum: value
                                             .split(',')
                                             .map((v) => v.trim())
                                             .filter(Boolean),
-                                    })
-                                }
+                                    });
+                                }}
                             />
                         </div>
                     )}
@@ -204,7 +227,7 @@ export const SchemaBuilder = () => {
                                                         value={type}
                                                         className="rounded-none"
                                                     >
-                                                        {t(`fieldTypes.${type}`)}
+                                                        {type}
                                                     </SelectItem>
                                                 ))}
                                         </SelectGroup>

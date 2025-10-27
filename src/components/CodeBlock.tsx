@@ -155,7 +155,7 @@ export const CodeBlock = ({
     };
 
     return (
-        <div className="relative group border rounded-lg overflow-hidden bg-card shadow-sm">
+        <div className="relative group border rounded-none overflow-hidden bg-card shadow-sm">
             {/* Header with language label and copy button */}
             <div className="flex items-center justify-between px-4 py-2.5 bg-muted/50 border-b backdrop-blur-sm">
                 <div className="flex items-center gap-3">

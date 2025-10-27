@@ -25,7 +25,7 @@ import {
 
 export const DataPreview = () => {
     const { t } = useTranslation();
-    const { generatedData } = useMockStore();
+    const { generatedData, schema } = useMockStore();
     const [activeTab, setActiveTab] = useState<'json' | 'typescript' | 'javascript' | 'table'>(
         'table'
     );
@@ -167,7 +167,7 @@ export const DataPreview = () => {
                     <TabsContent value="table" className="h-full m-0">
                         <ScrollArea className="h-full">
                             <div className="p-4">
-                                <div className="border rounded-lg overflow-hidden">
+                                <div className="border rounded-none overflow-hidden">
                                     <Table>
                                         <TableHeader className="bg-muted">
                                             <TableRow>
@@ -204,7 +204,10 @@ export const DataPreview = () => {
                     </TabsContent>
 
                     <TabsContent value="typescript" className="h-full m-0 p-4">
-                        <CodeBlock code={formatAsTypeScript(generatedData)} language="typescript" />
+                        <CodeBlock
+                            code={formatAsTypeScript(generatedData, schema)}
+                            language="typescript"
+                        />
                     </TabsContent>
 
                     <TabsContent value="javascript" className="h-full m-0 p-4">

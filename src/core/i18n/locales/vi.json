@@ -97,7 +97,8 @@
             "copySuccess": "Đã sao chép vào clipboard",
             "copyError": "Sao chép thất bại",
             "fieldRequired": "Trường này là bắt buộc",
-            "invalidNumber": "Vui lòng nhập số hợp lệ"
+            "invalidNumber": "Vui lòng nhập số hợp lệ",
+            "duplicateField": "Tên trường đã tồn tại! Vui lòng sử dụng tên khác."
         },
         "language": {
             "english": "Tiếng Anh",

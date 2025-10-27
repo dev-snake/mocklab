@@ -176,14 +176,42 @@ const randomName = (): string => {
 
 const randomAddress = (): string => {
     const streets = [
-        'Main St', 'Oak Ave', 'Maple Dr', 'Cedar Ln', 'Pine Rd', 'Elm St',
+        'Main St',
+        'Oak Ave',
+        'Maple Dr',
+        'Cedar Ln',
+        'Pine Rd',
+        'Elm St',
         // Vietnamese street names
-        'Nguyễn Trãi', 'Lê Lợi', 'Trần Hưng Đạo', 'Phan Đình Phùng', 'Hai Bà Trưng', 'Điện Biên Phủ', 'Hoàng Văn Thụ', 'Bạch Đằng', 'Tôn Đức Thắng', 'Quang Trung'
+        'Nguyễn Trãi',
+        'Lê Lợi',
+        'Trần Hưng Đạo',
+        'Phan Đình Phùng',
+        'Hai Bà Trưng',
+        'Điện Biên Phủ',
+        'Hoàng Văn Thụ',
+        'Bạch Đằng',
+        'Tôn Đức Thắng',
+        'Quang Trung',
     ];
     const cities = [
-        'New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Philadelphia',
+        'New York',
+        'Los Angeles',
+        'Chicago',
+        'Houston',
+        'Phoenix',
+        'Philadelphia',
         // Vietnamese cities
-        'Hà Nội', 'Hồ Chí Minh', 'Đà Nẵng', 'Hải Phòng', 'Cần Thơ', 'Huế', 'Nha Trang', 'Vũng Tàu', 'Biên Hòa', 'Buôn Ma Thuột'
+        'Hà Nội',
+        'Hồ Chí Minh',
+        'Đà Nẵng',
+        'Hải Phòng',
+        'Cần Thơ',
+        'Huế',
+        'Nha Trang',
+        'Vũng Tàu',
+        'Biên Hòa',
+        'Buôn Ma Thuột',
     ];
     return `${randomNumber(100, 9999)} ${streets[Math.floor(Math.random() * streets.length)]}, ${
         cities[Math.floor(Math.random() * cities.length)]
@@ -297,7 +325,7 @@ const randomText = (sentences = 3): string => {
         'hải',
         'phòng',
         'cần',
-        'thơ'
+        'thơ',
     ];
     let text = '';
     for (let i = 0; i < sentences; i++) {
@@ -423,15 +451,50 @@ export const formatAsJSON = (data: any[]): string => {
     return JSON.stringify(data, null, 2);
 };
 
-export const formatAsTypeScript = (data: any[], interfaceName = 'MockData'): string => {
+export const formatAsTypeScript = (
+    data: any[],
+    schema?: FieldSchema[],
+    interfaceName = 'MockData'
+): string => {
     const sample = data[0] || {};
+
+    // Build a map of field names to their types from schema
+    const schemaTypeMap = new Map<string, string>();
+    if (schema) {
+        schema.forEach((field) => {
+            if (field.type === 'enum' && field.enum) {
+                // For enum, create union type
+                schemaTypeMap.set(field.name, field.enum.map((v) => `'${v}'`).join(' | '));
+            } else if (field.type === 'array' && field.arrayOf) {
+                schemaTypeMap.set(field.name, `${field.arrayOf}[]`);
+            } else if (field.type === 'number') {
+                schemaTypeMap.set(field.name, 'number');
+            } else if (field.type === 'boolean') {
+                schemaTypeMap.set(field.name, 'boolean');
+            } else if (field.type === 'date' || field.type === 'datetime') {
+                schemaTypeMap.set(field.name, 'string');
+            } else {
+                schemaTypeMap.set(field.name, 'string');
+            }
+        });
+    }
+
     const interfaceFields = Object.entries(sample)
         .map(([key, value]) => {
-            let typeStr: string = typeof value;
-            if (Array.isArray(value)) {
-                const arrayType = value.length > 0 ? typeof value[0] : 'any';
-                typeStr = `${arrayType}[]`;
+            let typeStr: string;
+
+            // Check if we have schema type info
+            if (schemaTypeMap.has(key)) {
+                typeStr = schemaTypeMap.get(key)!;
+            } else {
+                // Fallback to runtime type detection
+                typeStr = typeof value;
+                if (Array.isArray(value)) {
+                    const arrayType = value.length > 0 ? typeof value[0] : 'any';
+                    typeStr = `${arrayType}[]`;
+                }
             }
+
             return `  ${key}: ${typeStr};`;
         })
         .join('\n');

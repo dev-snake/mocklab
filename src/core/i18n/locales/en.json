@@ -97,7 +97,8 @@
             "copySuccess": "Copied to clipboard",
             "copyError": "Failed to copy",
             "fieldRequired": "This field is required",
-            "invalidNumber": "Please enter a valid number"
+            "invalidNumber": "Please enter a valid number",
+            "duplicateField": "Field name already exists! Please use a different name."
         },
         "language": {
             "english": "English",
