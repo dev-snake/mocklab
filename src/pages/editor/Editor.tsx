@@ -11,18 +11,8 @@ export const Editor = () => {
     return (
         <div className="h-screen flex flex-col">
             {/* Header */}
-            <header className="border-b">
-                <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-                    <div>
-                        <h1 className="text-2xl font-bold">MockLab</h1>
-                        <p className="text-sm text-muted-foreground">
-                            {t('dataPreview.noDataDesc')}
-                        </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <LanguageSwitcher />
-                    </div>
-                </div>
+            <header className="border-b px-2 py-1 flex items-center justify-end bg-background">
+                <LanguageSwitcher />
             </header>
 
             {/* Main Content */}
