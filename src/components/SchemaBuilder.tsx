@@ -22,7 +22,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/componen
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from 'sonner';
 
-const fieldTypes: FieldType[] = ['string', 'number', 'boolean', 'date', 'uuid', 'enum', 'array'];
+const fieldTypes: FieldType[] = ['string', 'number', 'boolean', 'object', 'bigint', 'symbol'];
 
 export const SchemaBuilder = () => {
     const { t } = useTranslation();
@@ -33,7 +33,6 @@ export const SchemaBuilder = () => {
         type: 'string',
         required: true,
     });
-    const [enumInput, setEnumInput] = useState('');
 
     const handleAddField = () => {
         if (!editingField.name) return;
@@ -59,7 +58,6 @@ export const SchemaBuilder = () => {
             type: 'string',
             required: true,
         });
-        setEnumInput('');
     };
 
     return (
@@ -91,10 +89,6 @@ export const SchemaBuilder = () => {
                                 value={editingField.type}
                                 onValueChange={(value) => {
                                     setEditingField({ ...editingField, type: value as FieldType });
-                                    // Reset enum input when changing type
-                                    if (value !== 'enum') {
-                                        setEnumInput('');
-                                    }
                                 }}
                             >
                                 <SelectTrigger className="w-full rounded-none">
@@ -155,87 +149,137 @@ export const SchemaBuilder = () => {
                         </div>
                     )}
 
-                    {editingField.type === 'enum' && (
-                        <div className="space-y-2">
-                            <Label htmlFor="field-enum">{t('schemaBuilder.enumValues')}</Label>
-                            <Input
-                                id="field-enum"
-                                className="rounded-none"
-                                placeholder={t('schemaBuilder.enumPlaceholder')}
-                                value={enumInput}
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    setEnumInput(value);
-                                    setEditingField({
-                                        ...editingField,
-                                        enum: value
-                                            .split(',')
-                                            .map((v) => v.trim())
-                                            .filter(Boolean),
-                                    });
-                                }}
-                            />
-                        </div>
-                    )}
-
-                    {editingField.type === 'array' && (
+                    {editingField.type === 'bigint' && (
                         <div className="grid grid-cols-2 gap-3">
                             <div className="space-y-2">
-                                <Label htmlFor="array-type">
-                                    {t('schemaBuilder.arrayItemType')}
-                                </Label>
-                                <Select
-                                    value={editingField.arrayOf || 'string'}
-                                    onValueChange={(value) =>
-                                        setEditingField({
-                                            ...editingField,
-                                            arrayOf: value as FieldType,
-                                        })
-                                    }
-                                >
-                                    <SelectTrigger className="w-full rounded-none">
-                                        <SelectValue
-                                            placeholder={t('schemaBuilder.arrayItemType')}
-                                        />
-                                    </SelectTrigger>
-                                    <SelectContent className="rounded-none">
-                                        <SelectGroup>
-                                            <SelectLabel>
-                                                {t('schemaBuilder.arrayItemType')}
-                                            </SelectLabel>
-                                            {fieldTypes
-                                                .filter((t) => t !== 'array' && t !== 'object')
-                                                .map((type) => (
-                                                    <SelectItem
-                                                        key={type}
-                                                        value={type}
-                                                        className="rounded-none"
-                                                    >
-                                                        {type}
-                                                    </SelectItem>
-                                                ))}
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="array-length">
-                                    {t('schemaBuilder.arrayLength')}
-                                </Label>
+                                <Label htmlFor="bigint-min">{t('schemaBuilder.min')}</Label>
                                 <Input
-                                    id="array-length"
+                                    id="bigint-min"
                                     type="number"
                                     className="rounded-none"
-                                    placeholder="3"
-                                    value={editingField.length ?? ''}
+                                    placeholder="0"
+                                    value={editingField.min ?? ''}
                                     onChange={(e) =>
                                         setEditingField({
                                             ...editingField,
-                                            length: parseInt(e.target.value) || 3,
+                                            min: parseInt(e.target.value) || 0,
                                         })
                                     }
                                 />
                             </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="bigint-max">{t('schemaBuilder.max')}</Label>
+                                <Input
+                                    id="bigint-max"
+                                    type="number"
+                                    className="rounded-none"
+                                    placeholder="1000000"
+                                    value={editingField.max ?? ''}
+                                    onChange={(e) =>
+                                        setEditingField({
+                                            ...editingField,
+                                            max: parseInt(e.target.value) || 1000000,
+                                        })
+                                    }
+                                />
+                            </div>
+                        </div>
+                    )}
+
+                    {editingField.type === 'object' && (
+                        <div className="space-y-2">
+                            <Label htmlFor="object-props">
+                                {t('schemaBuilder.objectProperties')}
+                            </Label>
+                            <Input
+                                id="object-props"
+                                className="rounded-none"
+                                placeholder="username:string, age:number"
+                                onChange={(e) => {
+                                    const input = e.target.value;
+                                    if (input.trim()) {
+                                        try {
+                                            // Parse format: "key:type, key:type"
+                                            const props = input
+                                                .split(',')
+                                                .map((prop) => prop.trim())
+                                                .filter(Boolean)
+                                                .map((prop) => {
+                                                    const [name, type] = prop
+                                                        .split(':')
+                                                        .map((s) => s.trim());
+                                                    return {
+                                                        id: crypto.randomUUID(),
+                                                        name,
+                                                        type: type as FieldType,
+                                                        required: true,
+                                                    };
+                                                });
+                                            setEditingField({
+                                                ...editingField,
+                                                properties: props,
+                                            });
+                                        } catch (err) {
+                                            // Invalid format, ignore
+                                        }
+                                    } else {
+                                        setEditingField({
+                                            ...editingField,
+                                            properties: undefined,
+                                        });
+                                    }
+                                }}
+                            />
+                            <p className="text-xs text-muted-foreground">
+                                {t('schemaBuilder.objectPropertiesHint')}
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Array configuration */}
+                    <div className="flex items-center space-x-2">
+                        <Checkbox
+                            id="field-is-array"
+                            className="rounded-none hover:cursor-pointer"
+                            checked={editingField.isArray || false}
+                            onCheckedChange={(checked) => {
+                                if (checked) {
+                                    setEditingField({
+                                        ...editingField,
+                                        isArray: true,
+                                        arrayOf: editingField.type,
+                                        arrayLength: editingField.arrayLength || 3,
+                                        // Keep properties for object type arrays
+                                    });
+                                } else {
+                                    setEditingField({
+                                        ...editingField,
+                                        isArray: false,
+                                        arrayOf: undefined,
+                                        arrayLength: undefined,
+                                    });
+                                }
+                            }}
+                        />
+                        <Label htmlFor="field-is-array">{t('schemaBuilder.isArray')}</Label>
+                    </div>
+
+                    {editingField.isArray && (
+                        <div className="space-y-2">
+                            <Label htmlFor="array-length">{t('schemaBuilder.arrayLength')}</Label>
+                            <Input
+                                id="array-length"
+                                type="number"
+                                className="rounded-none"
+                                placeholder="3"
+                                value={editingField.arrayLength ?? ''}
+                                onChange={(e) =>
+                                    setEditingField({
+                                        ...editingField,
+                                        arrayLength: parseInt(e.target.value) || 3,
+                                    })
+                                }
+                            />
                         </div>
                     )}
 
@@ -284,39 +328,56 @@ export const SchemaBuilder = () => {
                                                     {field.name}
                                                 </span>
                                                 <span className="text-xs px-2 py-0.5 bg-primary/10 text-primary rounded">
-                                                    {field.type}
+                                                    {field.isArray && field.arrayOf
+                                                        ? field.arrayOf === 'object' &&
+                                                          field.properties &&
+                                                          field.properties.length > 0
+                                                            ? `{ ${field.properties
+                                                                  .map(
+                                                                      (p) => `${p.name}: ${p.type}`
+                                                                  )
+                                                                  .join(', ')} }[]`
+                                                            : `${field.arrayOf}[]`
+                                                        : field.type === 'object' &&
+                                                          field.properties &&
+                                                          field.properties.length > 0
+                                                        ? `{ ${field.properties
+                                                              .map((p) => `${p.name}: ${p.type}`)
+                                                              .join(', ')} }`
+                                                        : field.type}
                                                 </span>
                                                 {field.required && (
                                                     <span className="text-xs text-red-500">*</span>
                                                 )}
                                             </div>
-                                            {field.type === 'enum' && field.enum && (
-                                                <div className="text-xs text-muted-foreground truncate">
-                                                    {field.enum.join(', ')}
-                                                </div>
-                                            )}
-                                            {field.type === 'array' && field.arrayOf && (
+                                            {field.isArray && field.arrayOf && (
                                                 <div className="text-xs text-muted-foreground">
-                                                    {field.arrayOf}[] (length: {field.length || 3})
+                                                    Array length: {field.arrayLength || 3}
                                                 </div>
                                             )}
+                                            {field.type === 'number' &&
+                                                (field.min !== undefined ||
+                                                    field.max !== undefined) && (
+                                                    <div className="text-xs text-muted-foreground">
+                                                        Range: {field.min ?? 0} - {field.max ?? 100}
+                                                    </div>
+                                                )}
                                         </div>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="hover:cursor-pointer"
-                                            onClick={() => removeField(field.id)}
-                                        >
-                                            <Tooltip>
-                                                <TooltipTrigger className="hover:cursor-pointer">
-                                                    {' '}
-                                                    <Trash2 className="w-4 h-4 text-destructive " />
-                                                </TooltipTrigger>
-                                                <TooltipContent className="rounded-none">
-                                                    Delete
-                                                </TooltipContent>
-                                            </Tooltip>
-                                        </Button>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="hover:cursor-pointer"
+                                                    onClick={() => removeField(field.id)}
+                                                >
+                                                    <Trash2 className="w-4 h-4 text-destructive" />
+                                                </Button>
+                                            </TooltipTrigger>
+                                            <TooltipContent className="rounded-none">
+                                                Delete
+                                            </TooltipContent>
+                                        </Tooltip>
                                     </div>
                                 ))
                             )}

@@ -30,7 +30,10 @@
             "enumValues": "Giá trị Enum (phân cách bằng dấu phẩy)",
             "enumPlaceholder": "hoạt động,chờ,không hoạt động",
             "arrayItemType": "Kiểu phần tử mảng",
-            "arrayLength": "Độ dài mảng"
+            "arrayLength": "Độ dài mảng",
+            "isArray": "Là mảng",
+            "objectProperties": "Thuộc tính Object",
+            "objectPropertiesHint": "Định dạng: key:type, key:type (vd: username:string, age:number)"
         },
         "fieldTypes": {
             "string": "Chuỗi",
@@ -88,6 +91,7 @@
             "json": "JSON",
             "typescript": "TypeScript",
             "javascript": "JavaScript",
+            "zod": "Zod Schema",
             "noData": "Chưa có dữ liệu",
             "noDataDesc": "Cấu hình schema và nhấn 'Tạo dữ liệu' để xem kết quả.",
             "download": "Tải xuống"

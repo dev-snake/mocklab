@@ -18,14 +18,14 @@ const templates: Template[] = [
         description: 'Basic user profile with common fields',
         icon: <User className="w-5 h-5" />,
         schema: [
-            { id: crypto.randomUUID(), name: 'id', type: 'uuid', required: true },
+            { id: crypto.randomUUID(), name: 'id', type: 'string', required: true },
             { id: crypto.randomUUID(), name: 'username', type: 'string', required: true },
             { id: crypto.randomUUID(), name: 'email', type: 'string', required: true },
             { id: crypto.randomUUID(), name: 'fullName', type: 'string', required: true },
             { id: crypto.randomUUID(), name: 'phone', type: 'string', required: false },
             { id: crypto.randomUUID(), name: 'address', type: 'string', required: false },
             { id: crypto.randomUUID(), name: 'isActive', type: 'boolean', required: true },
-            { id: crypto.randomUUID(), name: 'createdAt', type: 'date', required: true },
+            { id: crypto.randomUUID(), name: 'createdAt', type: 'string', required: true },
         ],
     },
     {
@@ -33,7 +33,7 @@ const templates: Template[] = [
         description: 'Product data for online store',
         icon: <ShoppingCart className="w-5 h-5" />,
         schema: [
-            { id: crypto.randomUUID(), name: 'id', type: 'uuid', required: true },
+            { id: crypto.randomUUID(), name: 'id', type: 'string', required: true },
             { id: crypto.randomUUID(), name: 'name', type: 'string', required: true },
             { id: crypto.randomUUID(), name: 'description', type: 'string', required: true },
             {
@@ -55,17 +55,17 @@ const templates: Template[] = [
             {
                 id: crypto.randomUUID(),
                 name: 'category',
-                type: 'enum',
+                type: 'string',
                 required: true,
-                enum: ['Electronics', 'Clothing', 'Books', 'Home', 'Sports'],
             },
             {
                 id: crypto.randomUUID(),
                 name: 'tags',
-                type: 'array',
+                type: 'string',
                 required: false,
+                isArray: true,
                 arrayOf: 'string',
-                length: 3,
+                arrayLength: 3,
             },
             { id: crypto.randomUUID(), name: 'inStock', type: 'boolean', required: true },
         ],
@@ -75,7 +75,7 @@ const templates: Template[] = [
         description: 'Blog article with metadata',
         icon: <FileText className="w-5 h-5" />,
         schema: [
-            { id: crypto.randomUUID(), name: 'id', type: 'uuid', required: true },
+            { id: crypto.randomUUID(), name: 'id', type: 'string', required: true },
             { id: crypto.randomUUID(), name: 'title', type: 'string', required: true },
             { id: crypto.randomUUID(), name: 'slug', type: 'string', required: true },
             { id: crypto.randomUUID(), name: 'content', type: 'string', required: true },
@@ -83,17 +83,17 @@ const templates: Template[] = [
             {
                 id: crypto.randomUUID(),
                 name: 'status',
-                type: 'enum',
+                type: 'string',
                 required: true,
-                enum: ['draft', 'published', 'archived'],
             },
             {
                 id: crypto.randomUUID(),
                 name: 'tags',
-                type: 'array',
+                type: 'string',
                 required: false,
+                isArray: true,
                 arrayOf: 'string',
-                length: 4,
+                arrayLength: 4,
             },
             {
                 id: crypto.randomUUID(),
@@ -103,7 +103,7 @@ const templates: Template[] = [
                 min: 0,
                 max: 10000,
             },
-            { id: crypto.randomUUID(), name: 'publishedAt', type: 'date', required: true },
+            { id: crypto.randomUUID(), name: 'publishedAt', type: 'string', required: true },
         ],
     },
     {
@@ -111,19 +111,18 @@ const templates: Template[] = [
         description: 'Event or calendar entry',
         icon: <Calendar className="w-5 h-5" />,
         schema: [
-            { id: crypto.randomUUID(), name: 'id', type: 'uuid', required: true },
+            { id: crypto.randomUUID(), name: 'id', type: 'string', required: true },
             { id: crypto.randomUUID(), name: 'title', type: 'string', required: true },
             { id: crypto.randomUUID(), name: 'description', type: 'string', required: true },
             { id: crypto.randomUUID(), name: 'location', type: 'string', required: false },
             { id: crypto.randomUUID(), name: 'organizer', type: 'string', required: true },
-            { id: crypto.randomUUID(), name: 'startDate', type: 'date', required: true },
-            { id: crypto.randomUUID(), name: 'endDate', type: 'date', required: true },
+            { id: crypto.randomUUID(), name: 'startDate', type: 'string', required: true },
+            { id: crypto.randomUUID(), name: 'endDate', type: 'string', required: true },
             {
                 id: crypto.randomUUID(),
                 name: 'type',
-                type: 'enum',
+                type: 'string',
                 required: true,
-                enum: ['conference', 'meeting', 'workshop', 'webinar'],
             },
             {
                 id: crypto.randomUUID(),
@@ -140,7 +139,7 @@ const templates: Template[] = [
         description: 'Business or organization profile',
         icon: <Database className="w-5 h-5" />,
         schema: [
-            { id: crypto.randomUUID(), name: 'id', type: 'uuid', required: true },
+            { id: crypto.randomUUID(), name: 'id', type: 'string', required: true },
             { id: crypto.randomUUID(), name: 'name', type: 'string', required: true },
             { id: crypto.randomUUID(), name: 'website', type: 'string', required: true },
             { id: crypto.randomUUID(), name: 'email', type: 'string', required: true },
@@ -149,9 +148,8 @@ const templates: Template[] = [
             {
                 id: crypto.randomUUID(),
                 name: 'industry',
-                type: 'enum',
+                type: 'string',
                 required: true,
-                enum: ['Technology', 'Finance', 'Healthcare', 'Education', 'Retail'],
             },
             {
                 id: crypto.randomUUID(),

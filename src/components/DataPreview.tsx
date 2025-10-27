@@ -14,7 +14,12 @@ import {
 } from '@/components/ui/table';
 import { CodeBlock } from '@/components/CodeBlock';
 import { useMockStore } from '@/stores/mockStore';
-import { formatAsJSON, formatAsTypeScript, formatAsJavaScript } from '@/core/utils/mock-generator';
+import {
+    formatAsJSON,
+    formatAsTypeScript,
+    formatAsJavaScript,
+    formatAsZodSchema,
+} from '@/core/utils/mock-generator';
 import {
     Empty,
     EmptyHeader,
@@ -26,9 +31,9 @@ import {
 export const DataPreview = () => {
     const { t } = useTranslation();
     const { generatedData, schema } = useMockStore();
-    const [activeTab, setActiveTab] = useState<'json' | 'typescript' | 'javascript' | 'table'>(
-        'table'
-    );
+    const [activeTab, setActiveTab] = useState<
+        'json' | 'typescript' | 'javascript' | 'zod' | 'table'
+    >('table');
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
@@ -38,10 +43,13 @@ export const DataPreview = () => {
                 content = formatAsJSON(generatedData);
                 break;
             case 'typescript':
-                content = formatAsTypeScript(generatedData);
+                content = formatAsTypeScript(generatedData, schema);
                 break;
             case 'javascript':
                 content = formatAsJavaScript(generatedData);
+                break;
+            case 'zod':
+                content = formatAsZodSchema(schema);
                 break;
             case 'table':
                 content = formatAsJSON(generatedData);
@@ -63,12 +71,16 @@ export const DataPreview = () => {
                 filename = 'mock-data.json';
                 break;
             case 'typescript':
-                content = formatAsTypeScript(generatedData);
+                content = formatAsTypeScript(generatedData, schema);
                 filename = 'mock-data.ts';
                 break;
             case 'javascript':
                 content = formatAsJavaScript(generatedData);
                 filename = 'mock-data.js';
+                break;
+            case 'zod':
+                content = formatAsZodSchema(schema);
+                filename = 'schema.ts';
                 break;
             case 'table':
                 content = formatAsJSON(generatedData);
@@ -160,6 +172,10 @@ export const DataPreview = () => {
                             <FileCode className="w-4 h-4 mr-2" />
                             {t('dataPreview.javascript')}
                         </TabsTrigger>
+                        <TabsTrigger value="zod" className="hover:cursor-pointer rounded-none">
+                            <FileCode className="w-4 h-4 mr-2" />
+                            {t('dataPreview.zod')}
+                        </TabsTrigger>
                     </TabsList>
                 </div>
 
@@ -212,6 +228,10 @@ export const DataPreview = () => {
 
                     <TabsContent value="javascript" className="h-full m-0 p-4">
                         <CodeBlock code={formatAsJavaScript(generatedData)} language="javascript" />
+                    </TabsContent>
+
+                    <TabsContent value="zod" className="h-full m-0 p-4">
+                        <CodeBlock code={formatAsZodSchema(schema)} language="typescript" />
                     </TabsContent>
                 </div>
             </Tabs>
