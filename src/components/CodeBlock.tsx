@@ -14,7 +14,7 @@ export const CodeBlock = ({
     code,
     language = 'json',
     showLineNumbers = true,
-    maxHeight = '500px',
+    // maxHeight = '500px',
 }: CodeBlockProps) => {
     const [copied, setCopied] = useState(false);
 

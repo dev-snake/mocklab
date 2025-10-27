@@ -3,10 +3,8 @@ import { SchemaBuilder } from '@/components/SchemaBuilder';
 import { GeneratorOptions } from '@/components/GeneratorOptions';
 import { DataPreview } from '@/components/DataPreview';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
-import { useTranslation } from 'react-i18next';
 
 export const Editor = () => {
-    const { t } = useTranslation();
 
     return (
         <div className="h-screen flex flex-col">
