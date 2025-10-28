@@ -6,7 +6,7 @@ export const FieldTypeSchema = z.enum([
     'number',
     'boolean',
     'object',
-    'bigint',
+    // 'bigint',
     'symbol',
     'enum',
     'date',
@@ -100,7 +100,7 @@ const generateSimpleValue = (field: FieldSchema): any => {
         string: () => (field.length ? randomString(field.length) : randomString()),
         number: () => randomNumber(field.min || 0, field.max || 100),
         boolean: () => randomBoolean(),
-        bigint: () => randomBigInt(field.min, field.max),
+        // bigint: () => randomBigInt(field.min, field.max),
         symbol: () => randomSymbol(),
         object: () => randomObject(field.properties),
         enum: () => randomEnum(field.enumValues),
@@ -268,9 +268,12 @@ export const formatAsTypeScript = (
                     })
                     .join('; ');
                 typeStr = `{ ${props} }`;
-            } else if (field.type === 'bigint') {
-                typeStr = 'bigint';
-            } else if (field.type === 'symbol') {
+            }
+            //  else if (field.type === 'bigint') {
+            //     typeStr = 'bigint';
+            // } 
+            
+            else if (field.type === 'symbol') {
                 typeStr = 'symbol';
             } else if (field.type === 'enum') {
                 // Enum type as union of string literals
@@ -365,15 +368,15 @@ export const createZodSchema = (schema: FieldSchema[]): z.ZodObject<any> => {
                 case 'boolean':
                     zodType = z.boolean();
                     break;
-                case 'bigint':
-                    zodType = z.bigint();
-                    if (field.min !== undefined) {
-                        zodType = (zodType as z.ZodBigInt).min(BigInt(field.min));
-                    }
-                    if (field.max !== undefined) {
-                        zodType = (zodType as z.ZodBigInt).max(BigInt(field.max));
-                    }
-                    break;
+                // case 'bigint':
+                //     zodType = z.bigint();
+                //     if (field.min !== undefined) {
+                //         zodType = (zodType as z.ZodBigInt).min(BigInt(field.min));
+                //     }
+                //     if (field.max !== undefined) {
+                //         zodType = (zodType as z.ZodBigInt).max(BigInt(field.max));
+                //     }
+                //     break;
                 case 'symbol':
                     zodType = z.symbol();
                     break;
@@ -468,15 +471,15 @@ export const formatAsZodSchema = (schema: FieldSchema[], schemaName = 'mockDataS
                 case 'boolean':
                     zodCode = 'z.boolean()';
                     break;
-                case 'bigint':
-                    zodCode = 'z.bigint()';
-                    if (field.min !== undefined) {
-                        zodCode += `.min(${field.min}n)`;
-                    }
-                    if (field.max !== undefined) {
-                        zodCode += `.max(${field.max}n)`;
-                    }
-                    break;
+                // case 'bigint':
+                //     zodCode = 'z.bigint()';
+                //     if (field.min !== undefined) {
+                //         zodCode += `.min(${field.min}n)`;
+                //     }
+                //     if (field.max !== undefined) {
+                //         zodCode += `.max(${field.max}n)`;
+                //     }
+                //     break;
                 case 'symbol':
                     zodCode = 'z.symbol()';
                     break;

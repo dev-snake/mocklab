@@ -27,7 +27,7 @@ const fieldTypes: FieldType[] = [
     'number',
     'boolean',
     'object',
-    'bigint',
+    // 'bigint',
     'symbol',
     'enum',
     'date',
@@ -158,7 +158,7 @@ export const SchemaBuilder = () => {
                         </div>
                     )}
 
-                    {editingField.type === 'bigint' && (
+                    {/* {editingField.type === 'bigint' && (
                         <div className="grid grid-cols-2 gap-3">
                             <div className="space-y-2">
                                 <Label htmlFor="bigint-min">{t('schemaBuilder.min')}</Label>
@@ -193,7 +193,7 @@ export const SchemaBuilder = () => {
                                 />
                             </div>
                         </div>
-                    )}
+                    )} */}
 
                     {editingField.type === 'enum' && (
                         <div className="space-y-2">
