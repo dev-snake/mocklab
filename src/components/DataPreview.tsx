@@ -14,7 +14,12 @@ import {
 } from '@/components/ui/table';
 import { CodeBlock } from '@/components/CodeBlock';
 import { useMockStore } from '@/stores/mockStore';
-import { formatAsJSON, formatAsTypeScript, formatAsJavaScript } from '@/core/utils/mock-generator';
+import {
+    formatAsJSON,
+    formatAsTypeScript,
+    formatAsJavaScript,
+    formatAsZodSchema,
+} from '@/core/utils/mock-generator';
 import {
     Empty,
     EmptyHeader,
@@ -25,10 +30,10 @@ import {
 
 export const DataPreview = () => {
     const { t } = useTranslation();
-    const { generatedData } = useMockStore();
-    const [activeTab, setActiveTab] = useState<'json' | 'typescript' | 'javascript' | 'table'>(
-        'table'
-    );
+    const { generatedData, schema } = useMockStore();
+    const [activeTab, setActiveTab] = useState<
+        'json' | 'typescript' | 'javascript' | 'zod' | 'table'
+    >('table');
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
@@ -38,10 +43,13 @@ export const DataPreview = () => {
                 content = formatAsJSON(generatedData);
                 break;
             case 'typescript':
-                content = formatAsTypeScript(generatedData);
+                content = formatAsTypeScript(generatedData, schema);
                 break;
             case 'javascript':
                 content = formatAsJavaScript(generatedData);
+                break;
+            case 'zod':
+                content = formatAsZodSchema(schema);
                 break;
             case 'table':
                 content = formatAsJSON(generatedData);
@@ -63,12 +71,16 @@ export const DataPreview = () => {
                 filename = 'mock-data.json';
                 break;
             case 'typescript':
-                content = formatAsTypeScript(generatedData);
+                content = formatAsTypeScript(generatedData, schema);
                 filename = 'mock-data.ts';
                 break;
             case 'javascript':
                 content = formatAsJavaScript(generatedData);
                 filename = 'mock-data.js';
+                break;
+            case 'zod':
+                content = formatAsZodSchema(schema);
+                filename = 'schema.ts';
                 break;
             case 'table':
                 content = formatAsJSON(generatedData);
@@ -111,7 +123,7 @@ export const DataPreview = () => {
                     <div className="flex gap-2">
                         <Button
                             variant="outline"
-                            className="hover:cursor-pointer"
+                            className="hover:cursor-pointer rounded-none"
                             size="sm"
                             onClick={handleCopy}
                         >
@@ -121,7 +133,7 @@ export const DataPreview = () => {
                         <Button
                             variant="outline"
                             size="sm"
-                            className="hover:cursor-pointer"
+                            className="hover:cursor-pointer rounded-none"
                             onClick={handleDownload}
                         >
                             <Download className="w-4 h-4 mr-2" />
@@ -137,22 +149,32 @@ export const DataPreview = () => {
                 className="flex-1 flex flex-col"
             >
                 <div className="border-b px-4 py-2">
-                    <TabsList>
-                        <TabsTrigger value="table" className="hover:cursor-pointer">
+                    <TabsList className="rounded-none">
+                        <TabsTrigger value="table" className="hover:cursor-pointer rounded-none">
                             <FileJson className="w-4 h-4 mr-2" />
                             {t('dataPreview.table')}
                         </TabsTrigger>
-                        <TabsTrigger value="json" className="hover:cursor-pointer">
+                        <TabsTrigger value="json" className="hover:cursor-pointer rounded-none">
                             <FileJson className="w-4 h-4 mr-2" />
                             {t('dataPreview.json')}
                         </TabsTrigger>
-                        <TabsTrigger value="typescript" className="hover:cursor-pointer">
+                        <TabsTrigger
+                            value="typescript"
+                            className="hover:cursor-pointer rounded-none"
+                        >
                             <FileCode className="w-4 h-4 mr-2" />
                             {t('dataPreview.typescript')}
                         </TabsTrigger>
-                        <TabsTrigger value="javascript" className="hover:cursor-pointer">
+                        <TabsTrigger
+                            value="javascript"
+                            className="hover:cursor-pointer rounded-none"
+                        >
                             <FileCode className="w-4 h-4 mr-2" />
                             {t('dataPreview.javascript')}
+                        </TabsTrigger>
+                        <TabsTrigger value="zod" className="hover:cursor-pointer rounded-none">
+                            <FileCode className="w-4 h-4 mr-2" />
+                            {t('dataPreview.zod')}
                         </TabsTrigger>
                     </TabsList>
                 </div>
@@ -161,7 +183,7 @@ export const DataPreview = () => {
                     <TabsContent value="table" className="h-full m-0">
                         <ScrollArea className="h-full">
                             <div className="p-4">
-                                <div className="border rounded-lg overflow-hidden">
+                                <div className="border rounded-none overflow-hidden">
                                     <Table>
                                         <TableHeader className="bg-muted">
                                             <TableRow>
@@ -179,7 +201,12 @@ export const DataPreview = () => {
                                                     </TableCell>
                                                     {Object.values(item).map((value: any, i) => (
                                                         <TableCell key={i}>
-                                                            {typeof value === 'object'
+                                                            {typeof value === 'bigint'
+                                                                ? value.toString()
+                                                                : typeof value === 'symbol'
+                                                                ? value.toString()
+                                                                : typeof value === 'object' &&
+                                                                  value !== null
                                                                 ? JSON.stringify(value)
                                                                 : String(value)}
                                                         </TableCell>
@@ -198,11 +225,18 @@ export const DataPreview = () => {
                     </TabsContent>
 
                     <TabsContent value="typescript" className="h-full m-0 p-4">
-                        <CodeBlock code={formatAsTypeScript(generatedData)} language="typescript" />
+                        <CodeBlock
+                            code={formatAsTypeScript(generatedData, schema)}
+                            language="typescript"
+                        />
                     </TabsContent>
 
                     <TabsContent value="javascript" className="h-full m-0 p-4">
                         <CodeBlock code={formatAsJavaScript(generatedData)} language="javascript" />
+                    </TabsContent>
+
+                    <TabsContent value="zod" className="h-full m-0 p-4">
+                        <CodeBlock code={formatAsZodSchema(schema)} language="typescript" />
                     </TabsContent>
                 </div>
             </Tabs>

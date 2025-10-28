@@ -1,22 +1,18 @@
 // Mock Data Generator Library
+import { z } from 'zod';
 
-export type FieldType =
-    | 'string'
-    | 'number'
-    | 'boolean'
-    | 'email'
-    | 'url'
-    | 'date'
-    | 'datetime'
-    | 'uuid'
-    | 'phone'
-    | 'name'
-    | 'address'
-    | 'company'
-    | 'text'
-    | 'enum'
-    | 'array'
-    | 'object';
+export const FieldTypeSchema = z.enum([
+    'string',
+    'number',
+    'boolean',
+    'object',
+    'bigint',
+    'symbol',
+    'enum',
+    'date',
+]);
+
+export type FieldType = z.infer<typeof FieldTypeSchema>;
 
 export interface FieldSchema {
     id: string;
@@ -26,11 +22,15 @@ export interface FieldSchema {
     default?: any;
     min?: number;
     max?: number;
-    pattern?: string;
-    enum?: string[];
     length?: number;
+    // For arrays - represented as object type with special handling
+    isArray?: boolean;
     arrayOf?: FieldType;
+    arrayLength?: number;
+    // For objects - define properties
     properties?: FieldSchema[];
+    // For enum - define possible values
+    enumValues?: string[];
 }
 
 export type GeneratorType = 'random' | 'realistic' | 'sequential' | 'template' | 'custom';
@@ -53,132 +53,60 @@ const randomString = (length = 10): string => {
     return result;
 };
 
-const randomNumber = (min = 0, max = 100): number => {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-};
+const randomNumber = (min = 0, max = 100): number =>
+    Math.floor(Math.random() * (max - min + 1)) + min;
 
 const randomBoolean = (): boolean => Math.random() > 0.5;
 
-const randomEmail = (): string => {
-    const names = ['john', 'jane', 'alice', 'bob', 'charlie', 'david', 'emma', 'frank'];
-    const domains = ['example.com', 'test.com', 'demo.com', 'mail.com'];
-    return `${names[Math.floor(Math.random() * names.length)]}${randomNumber(1, 999)}@${
-        domains[Math.floor(Math.random() * domains.length)]
-    }`;
+const randomBigInt = (min = 0, max = 1000000): bigint => {
+    const num = Math.floor(Math.random() * (max - min + 1)) + min;
+    return BigInt(num);
 };
 
-const randomUrl = (): string => {
-    const protocols = ['https://'];
-    const domains = ['example.com', 'test.com', 'demo.com', 'website.com'];
-    const paths = ['', '/page', '/about', '/contact', '/blog'];
-    return `${protocols[0]}${domains[Math.floor(Math.random() * domains.length)]}${
-        paths[Math.floor(Math.random() * paths.length)]
-    }`;
+const randomSymbol = (): symbol => Symbol(randomString(8));
+
+const randomEnum = (values?: string[]): string => {
+    if (!values || values.length === 0) {
+        return 'VALUE_1'; // Default enum value
+    }
+    return values[Math.floor(Math.random() * values.length)];
 };
 
 const randomDate = (): string => {
-    const start = new Date(2020, 0, 1);
-    const end = new Date();
-    const date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-    return date.toISOString().split('T')[0];
+    const start = new Date(2020, 0, 1).getTime();
+    const end = new Date().getTime();
+    const randomTime = start + Math.random() * (end - start);
+    return new Date(randomTime).toISOString();
 };
 
-const randomDateTime = (): string => {
-    const start = new Date(2020, 0, 1);
-    const end = new Date();
-    const date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-    return date.toISOString();
-};
-
-const randomUUID = (): string => {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-        const r = (Math.random() * 16) | 0;
-        const v = c === 'x' ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-    });
-};
-
-const randomPhone = (): string => {
-    return `+1 (${randomNumber(200, 999)}) ${randomNumber(200, 999)}-${randomNumber(1000, 9999)}`;
-};
-
-const randomName = (): string => {
-    const firstNames = [
-        'John',
-        'Jane',
-        'Alice',
-        'Bob',
-        'Charlie',
-        'David',
-        'Emma',
-        'Frank',
-        'Grace',
-        'Henry',
-    ];
-    const lastNames = [
-        'Smith',
-        'Johnson',
-        'Williams',
-        'Brown',
-        'Jones',
-        'Garcia',
-        'Miller',
-        'Davis',
-        'Rodriguez',
-        'Martinez',
-    ];
-    return `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${
-        lastNames[Math.floor(Math.random() * lastNames.length)]
-    }`;
-};
-
-const randomAddress = (): string => {
-    const streets = ['Main St', 'Oak Ave', 'Maple Dr', 'Cedar Ln', 'Pine Rd', 'Elm St'];
-    const cities = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Philadelphia'];
-    return `${randomNumber(100, 9999)} ${streets[Math.floor(Math.random() * streets.length)]}, ${
-        cities[Math.floor(Math.random() * cities.length)]
-    }`;
-};
-
-const randomCompany = (): string => {
-    const prefixes = ['Tech', 'Global', 'Digital', 'Smart', 'Pro', 'Next'];
-    const suffixes = ['Solutions', 'Systems', 'Corp', 'Inc', 'Industries', 'Group'];
-    return `${prefixes[Math.floor(Math.random() * prefixes.length)]} ${
-        suffixes[Math.floor(Math.random() * suffixes.length)]
-    }`;
-};
-
-const randomText = (sentences = 3): string => {
-    const words = [
-        'lorem',
-        'ipsum',
-        'dolor',
-        'sit',
-        'amet',
-        'consectetur',
-        'adipiscing',
-        'elit',
-        'sed',
-        'do',
-        'eiusmod',
-        'tempor',
-        'incididunt',
-    ];
-    let text = '';
-    for (let i = 0; i < sentences; i++) {
-        const sentenceLength = randomNumber(5, 15);
-        const sentence = [];
-        for (let j = 0; j < sentenceLength; j++) {
-            sentence.push(words[Math.floor(Math.random() * words.length)]);
-        }
-        text +=
-            sentence[0].charAt(0).toUpperCase() +
-            sentence[0].slice(1) +
-            ' ' +
-            sentence.slice(1).join(' ') +
-            '. ';
+const randomObject = (properties?: FieldSchema[]): any => {
+    if (properties && properties.length > 0) {
+        const obj: any = {};
+        properties.forEach((prop) => {
+            obj[prop.name] = generateSimpleValue(prop);
+        });
+        return obj;
     }
-    return text.trim();
+    // Default object with common properties
+    return {
+        id: randomString(8),
+        value: randomString(10),
+    };
+};
+
+// Helper function to generate simple values without recursion issues
+const generateSimpleValue = (field: FieldSchema): any => {
+    const map: Record<FieldType, () => any> = {
+        string: () => (field.length ? randomString(field.length) : randomString()),
+        number: () => randomNumber(field.min || 0, field.max || 100),
+        boolean: () => randomBoolean(),
+        bigint: () => randomBigInt(field.min, field.max),
+        symbol: () => randomSymbol(),
+        object: () => randomObject(field.properties),
+        enum: () => randomEnum(field.enumValues),
+        date: () => randomDate(),
+    };
+    return map[field.type]() || randomString();
 };
 
 // Realistic generators
@@ -186,20 +114,11 @@ const realisticGenerators: Record<string, (field: FieldSchema) => any> = {
     string: (field: FieldSchema) => (field.length ? randomString(field.length) : randomString()),
     number: (field: FieldSchema) => randomNumber(field.min || 0, field.max || 100),
     boolean: randomBoolean,
-    email: randomEmail,
-    url: randomUrl,
+    bigint: (field: FieldSchema) => randomBigInt(field.min, field.max),
+    symbol: randomSymbol,
+    object: (field: FieldSchema) => randomObject(field.properties),
+    enum: (field: FieldSchema) => randomEnum(field.enumValues),
     date: randomDate,
-    datetime: randomDateTime,
-    uuid: randomUUID,
-    phone: randomPhone,
-    name: randomName,
-    address: randomAddress,
-    company: randomCompany,
-    text: () => randomText(),
-    enum: (field: FieldSchema) =>
-        field.enum && field.enum.length > 0
-            ? field.enum[Math.floor(Math.random() * field.enum.length)]
-            : 'option',
 };
 
 // Sequential generators
@@ -207,36 +126,43 @@ const sequentialGenerators: Record<string, (field: FieldSchema, index: number) =
     string: (_field: FieldSchema, index: number) => `item_${index}`,
     number: (_field: FieldSchema, index: number) => index,
     boolean: (_field: FieldSchema, index: number) => index % 2 === 0,
-    email: (_field: FieldSchema, index: number) => `user${index}@example.com`,
-    url: (_field: FieldSchema, index: number) => `https://example.com/page${index}`,
+    bigint: (_field: FieldSchema, index: number) => BigInt(index),
+    symbol: (_field: FieldSchema, index: number) => Symbol(`symbol_${index}`),
+    object: (field: FieldSchema, index: number) => {
+        if (field.properties && field.properties.length > 0) {
+            const obj: any = {};
+            field.properties.forEach((prop) => {
+                obj[prop.name] = sequentialGenerators[prop.type]?.(prop, index) ?? `value_${index}`;
+            });
+            return obj;
+        }
+        return { id: index, value: `item_${index}` };
+    },
+    enum: (field: FieldSchema, index: number) => {
+        if (field.enumValues && field.enumValues.length > 0) {
+            return field.enumValues[index % field.enumValues.length];
+        }
+        return `VALUE_${(index % 3) + 1}`;
+    },
     date: (_field: FieldSchema, index: number) => {
-        const date = new Date(2024, 0, 1);
-        date.setDate(date.getDate() + index);
-        return date.toISOString().split('T')[0];
+        const baseDate = new Date(2020, 0, 1);
+        baseDate.setDate(baseDate.getDate() + index);
+        return baseDate.toISOString();
     },
-    datetime: (_field: FieldSchema, index: number) => {
-        const date = new Date(2024, 0, 1);
-        date.setHours(date.getHours() + index);
-        return date.toISOString();
-    },
-    uuid: (_field: FieldSchema, index: number) =>
-        `00000000-0000-4000-8000-${String(index).padStart(12, '0')}`,
-    phone: (_field: FieldSchema, index: number) => `+1 (555) 000-${String(index).padStart(4, '0')}`,
-    name: (_field: FieldSchema, index: number) => `User ${index}`,
-    address: (_field: FieldSchema, index: number) => `${index} Main St, City`,
-    company: (_field: FieldSchema, index: number) => `Company ${index}`,
-    text: (_field: FieldSchema, index: number) => `This is text content for item ${index}.`,
-    enum: (field: FieldSchema, index: number) =>
-        field.enum && field.enum.length > 0 ? field.enum[index % field.enum.length] : 'option',
 };
 
 // Generate single value
 const generateValue = (field: FieldSchema, options: GeneratorOptions, index: number): any => {
-    if (field.type === 'array') {
-        const arrayLength = field.length || 3;
+    // Handle arrays (represented as isArray flag)
+    if (field.isArray) {
+        const arrayLength = field.arrayLength || 3;
         const arrayType = field.arrayOf || 'string';
         return Array.from({ length: arrayLength }, (_, i) => {
-            const arrayField = { ...field, type: arrayType };
+            const arrayField: FieldSchema = {
+                ...field,
+                type: arrayType,
+                isArray: false,
+            };
             return generateValue(arrayField, options, i);
         });
     }
@@ -272,9 +198,8 @@ export const generateMockData = (schema: FieldSchema[], options: GeneratorOption
         const item: any = {};
 
         schema.forEach((field) => {
-            if (field.required !== false) {
-                item[field.name] = generateValue(field, options, i);
-            }
+            // Generate all fields, including optional ones
+            item[field.name] = generateValue(field, options, i);
         });
 
         result.push(item);
@@ -285,29 +210,314 @@ export const generateMockData = (schema: FieldSchema[], options: GeneratorOption
 
 // Export formatters
 export const formatAsJSON = (data: any[]): string => {
-    return JSON.stringify(data, null, 2);
+    // Custom replacer to handle bigint and symbol
+    const replacer = (_key: string, value: any) => {
+        if (typeof value === 'bigint') {
+            return value.toString(); // Convert bigint to string
+        }
+        if (typeof value === 'symbol') {
+            return value.toString(); // Convert symbol to string
+        }
+        return value;
+    };
+    return JSON.stringify(data, replacer, 2);
 };
 
-export const formatAsTypeScript = (data: any[], interfaceName = 'MockData'): string => {
+export const formatAsTypeScript = (
+    data: any[],
+    schema?: FieldSchema[],
+    interfaceName = 'MockData'
+): string => {
     const sample = data[0] || {};
+
+    // Build a map of field names to their types from schema
+    const schemaTypeMap = new Map<string, string>();
+    if (schema) {
+        schema.forEach((field) => {
+            let typeStr = '';
+
+            // Check isArray first, then handle type
+            if (field.isArray && field.arrayOf) {
+                // Array type
+                if (field.arrayOf === 'object' && field.properties && field.properties.length > 0) {
+                    // Object array with properties: { name: string; age: number }[]
+                    const props = field.properties
+                        .map((prop) => {
+                            if (prop.isArray && prop.arrayOf) {
+                                return `${prop.name}: ${prop.arrayOf}[]`;
+                            }
+                            return `${prop.name}: ${prop.type === 'date' ? 'string' : prop.type}`;
+                        })
+                        .join('; ');
+                    typeStr = `{ ${props} }[]`;
+                } else {
+                    // Simple array: string[], number[], etc.
+                    // Date arrays should be string[]
+                    typeStr = `${field.arrayOf === 'date' ? 'string' : field.arrayOf}[]`;
+                }
+            } else if (field.type === 'object' && field.properties && field.properties.length > 0) {
+                // Non-array object with properties: { name: string; age: number }
+                const props = field.properties
+                    .map((prop) => {
+                        if (prop.isArray && prop.arrayOf) {
+                            return `${prop.name}: ${
+                                prop.arrayOf === 'date' ? 'string' : prop.arrayOf
+                            }[]`;
+                        }
+                        return `${prop.name}: ${prop.type === 'date' ? 'string' : prop.type}`;
+                    })
+                    .join('; ');
+                typeStr = `{ ${props} }`;
+            } else if (field.type === 'bigint') {
+                typeStr = 'bigint';
+            } else if (field.type === 'symbol') {
+                typeStr = 'symbol';
+            } else if (field.type === 'enum') {
+                // Enum type as union of string literals
+                if (field.enumValues && field.enumValues.length > 0) {
+                    typeStr = field.enumValues.map((v) => `'${v}'`).join(' | ');
+                } else {
+                    typeStr = 'string';
+                }
+            } else if (field.type === 'date') {
+                typeStr = 'string'; // Date is represented as string in TypeScript
+            } else if (field.type === 'object') {
+                typeStr = 'Record<string, any>'; // Generic object
+            } else {
+                // string | number | boolean
+                typeStr = field.type;
+            }
+
+            schemaTypeMap.set(field.name, typeStr);
+        });
+    }
+
     const interfaceFields = Object.entries(sample)
         .map(([key, value]) => {
-            let typeStr: string = typeof value;
-            if (Array.isArray(value)) {
-                const arrayType = value.length > 0 ? typeof value[0] : 'any';
-                typeStr = `${arrayType}[]`;
+            let typeStr: string;
+
+            // Check if we have schema type info
+            if (schemaTypeMap.has(key)) {
+                typeStr = schemaTypeMap.get(key)!;
+            } else {
+                // Fallback to runtime type detection
+                if (typeof value === 'bigint') {
+                    typeStr = 'bigint';
+                } else if (typeof value === 'symbol') {
+                    typeStr = 'symbol';
+                } else if (Array.isArray(value)) {
+                    const arrayType = value.length > 0 ? typeof value[0] : 'any';
+                    typeStr = `${arrayType}[]`;
+                } else if (typeof value === 'object' && value !== null) {
+                    typeStr = 'Record<string, any>';
+                } else {
+                    typeStr = typeof value;
+                }
             }
+
             return `  ${key}: ${typeStr};`;
         })
         .join('\n');
 
+    // For JSON serialization, convert bigint and symbol to string using formatAsJSON
+    const jsonData = JSON.parse(formatAsJSON(data));
+
     return `interface ${interfaceName} {\n${interfaceFields}\n}\n\nexport const mockData: ${interfaceName}[] = ${JSON.stringify(
-        data,
+        jsonData,
         null,
         2
     )};`;
 };
 
 export const formatAsJavaScript = (data: any[], variableName = 'mockData'): string => {
-    return `export const ${variableName} = ${JSON.stringify(data, null, 2)};`;
+    // Use formatAsJSON to properly serialize bigint/symbol
+    return `export const ${variableName} = ${formatAsJSON(data)};`;
+};
+
+// Create Zod schema from FieldSchema
+export const createZodSchema = (schema: FieldSchema[]): z.ZodObject<any> => {
+    const shape: Record<string, z.ZodTypeAny> = {};
+
+    schema.forEach((field) => {
+        let zodType: z.ZodTypeAny;
+
+        // Handle object types with properties
+        if (field.type === 'object' && field.properties && field.properties.length > 0) {
+            zodType = createZodSchema(field.properties);
+        } else {
+            // Handle primitive types
+            switch (field.type) {
+                case 'string':
+                    zodType = z.string();
+                    if (field.length) {
+                        zodType = (zodType as z.ZodString).length(field.length);
+                    }
+                    break;
+                case 'number':
+                    zodType = z.number();
+                    if (field.min !== undefined) {
+                        zodType = (zodType as z.ZodNumber).min(field.min);
+                    }
+                    if (field.max !== undefined) {
+                        zodType = (zodType as z.ZodNumber).max(field.max);
+                    }
+                    break;
+                case 'boolean':
+                    zodType = z.boolean();
+                    break;
+                case 'bigint':
+                    zodType = z.bigint();
+                    if (field.min !== undefined) {
+                        zodType = (zodType as z.ZodBigInt).min(BigInt(field.min));
+                    }
+                    if (field.max !== undefined) {
+                        zodType = (zodType as z.ZodBigInt).max(BigInt(field.max));
+                    }
+                    break;
+                case 'symbol':
+                    zodType = z.symbol();
+                    break;
+                case 'enum':
+                    if (field.enumValues && field.enumValues.length > 0) {
+                        zodType = z.enum(field.enumValues as [string, ...string[]]);
+                    } else {
+                        zodType = z.string();
+                    }
+                    break;
+                case 'date':
+                    zodType = z.string(); // Date is represented as string
+                    break;
+                case 'object':
+                    zodType = z.record(z.string(), z.any());
+                    break;
+                default:
+                    zodType = z.any();
+            }
+        }
+
+        // Handle arrays
+        if (field.isArray) {
+            zodType = z.array(zodType);
+            if (field.arrayLength) {
+                zodType = (zodType as z.ZodArray<any>).length(field.arrayLength);
+            }
+        }
+
+        // Handle optional fields
+        if (field.required === false) {
+            zodType = zodType.optional();
+        }
+
+        shape[field.name] = zodType;
+    });
+
+    return z.object(shape);
+};
+
+// Validate data against schema
+export const validateData = (
+    data: any[],
+    schema: FieldSchema[]
+): { valid: boolean; errors?: string[] } => {
+    try {
+        const zodSchema = createZodSchema(schema);
+        const arraySchema = z.array(zodSchema);
+        arraySchema.parse(data);
+        return { valid: true };
+    } catch (error) {
+        if (error instanceof z.ZodError) {
+            return {
+                valid: false,
+                errors: error.issues.map((e: z.ZodIssue) => `${e.path.join('.')}: ${e.message}`),
+            };
+        }
+        return { valid: false, errors: ['Unknown validation error'] };
+    }
+};
+
+// Generate Zod schema code as string
+export const formatAsZodSchema = (schema: FieldSchema[], schemaName = 'mockDataSchema'): string => {
+    const generateZodType = (field: FieldSchema, indent = '  '): string => {
+        let zodCode = '';
+
+        if (field.type === 'object' && field.properties && field.properties.length > 0) {
+            const props = field.properties
+                .map(
+                    (prop) =>
+                        `${indent}  ${prop.name}: ${generateZodType(prop, indent + '  ').trim()}`
+                )
+                .join(',\n');
+            zodCode = `z.object({\n${props}\n${indent}})`;
+        } else {
+            switch (field.type) {
+                case 'string':
+                    zodCode = 'z.string()';
+                    if (field.length) {
+                        zodCode += `.length(${field.length})`;
+                    }
+                    break;
+                case 'number':
+                    zodCode = 'z.number()';
+                    if (field.min !== undefined) {
+                        zodCode += `.min(${field.min})`;
+                    }
+                    if (field.max !== undefined) {
+                        zodCode += `.max(${field.max})`;
+                    }
+                    break;
+                case 'boolean':
+                    zodCode = 'z.boolean()';
+                    break;
+                case 'bigint':
+                    zodCode = 'z.bigint()';
+                    if (field.min !== undefined) {
+                        zodCode += `.min(${field.min}n)`;
+                    }
+                    if (field.max !== undefined) {
+                        zodCode += `.max(${field.max}n)`;
+                    }
+                    break;
+                case 'symbol':
+                    zodCode = 'z.symbol()';
+                    break;
+                case 'enum':
+                    if (field.enumValues && field.enumValues.length > 0) {
+                        const enumValues = field.enumValues.map((v) => `'${v}'`).join(', ');
+                        zodCode = `z.enum([${enumValues}])`;
+                    } else {
+                        zodCode = 'z.string()';
+                    }
+                    break;
+                case 'date':
+                    zodCode = 'z.string()'; // Date is represented as string
+                    break;
+                case 'object':
+                    zodCode = 'z.record(z.string(), z.any())';
+                    break;
+                default:
+                    zodCode = 'z.any()';
+            }
+        }
+
+        if (field.isArray) {
+            zodCode = `z.array(${zodCode})`;
+            if (field.arrayLength) {
+                zodCode += `.length(${field.arrayLength})`;
+            }
+        }
+
+        if (field.required === false) {
+            zodCode += '.optional()';
+        }
+
+        return zodCode;
+    };
+
+    const schemaFields = schema
+        .map((field) => `  ${field.name}: ${generateZodType(field)}`)
+        .join(',\n');
+
+    return `import { z } from 'zod';\n\nexport const ${schemaName} = z.object({\n${schemaFields}\n});\n\nexport type ${
+        schemaName.charAt(0).toUpperCase() + schemaName.slice(1)
+    }Type = z.infer<typeof ${schemaName}>;`;
 };

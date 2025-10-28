@@ -18,14 +18,14 @@ const templates: Template[] = [
         description: 'Basic user profile with common fields',
         icon: <User className="w-5 h-5" />,
         schema: [
-            { id: crypto.randomUUID(), name: 'id', type: 'uuid', required: true },
+            { id: crypto.randomUUID(), name: 'id', type: 'string', required: true },
             { id: crypto.randomUUID(), name: 'username', type: 'string', required: true },
-            { id: crypto.randomUUID(), name: 'email', type: 'email', required: true },
-            { id: crypto.randomUUID(), name: 'fullName', type: 'name', required: true },
-            { id: crypto.randomUUID(), name: 'phone', type: 'phone', required: false },
-            { id: crypto.randomUUID(), name: 'address', type: 'address', required: false },
+            { id: crypto.randomUUID(), name: 'email', type: 'string', required: true },
+            { id: crypto.randomUUID(), name: 'fullName', type: 'string', required: true },
+            { id: crypto.randomUUID(), name: 'phone', type: 'string', required: false },
+            { id: crypto.randomUUID(), name: 'address', type: 'string', required: false },
             { id: crypto.randomUUID(), name: 'isActive', type: 'boolean', required: true },
-            { id: crypto.randomUUID(), name: 'createdAt', type: 'datetime', required: true },
+            { id: crypto.randomUUID(), name: 'createdAt', type: 'string', required: true },
         ],
     },
     {
@@ -33,9 +33,9 @@ const templates: Template[] = [
         description: 'Product data for online store',
         icon: <ShoppingCart className="w-5 h-5" />,
         schema: [
-            { id: crypto.randomUUID(), name: 'id', type: 'uuid', required: true },
+            { id: crypto.randomUUID(), name: 'id', type: 'string', required: true },
             { id: crypto.randomUUID(), name: 'name', type: 'string', required: true },
-            { id: crypto.randomUUID(), name: 'description', type: 'text', required: true },
+            { id: crypto.randomUUID(), name: 'description', type: 'string', required: true },
             {
                 id: crypto.randomUUID(),
                 name: 'price',
@@ -55,17 +55,17 @@ const templates: Template[] = [
             {
                 id: crypto.randomUUID(),
                 name: 'category',
-                type: 'enum',
+                type: 'string',
                 required: true,
-                enum: ['Electronics', 'Clothing', 'Books', 'Home', 'Sports'],
             },
             {
                 id: crypto.randomUUID(),
                 name: 'tags',
-                type: 'array',
+                type: 'string',
                 required: false,
+                isArray: true,
                 arrayOf: 'string',
-                length: 3,
+                arrayLength: 3,
             },
             { id: crypto.randomUUID(), name: 'inStock', type: 'boolean', required: true },
         ],
@@ -75,25 +75,25 @@ const templates: Template[] = [
         description: 'Blog article with metadata',
         icon: <FileText className="w-5 h-5" />,
         schema: [
-            { id: crypto.randomUUID(), name: 'id', type: 'uuid', required: true },
+            { id: crypto.randomUUID(), name: 'id', type: 'string', required: true },
             { id: crypto.randomUUID(), name: 'title', type: 'string', required: true },
             { id: crypto.randomUUID(), name: 'slug', type: 'string', required: true },
-            { id: crypto.randomUUID(), name: 'content', type: 'text', required: true },
-            { id: crypto.randomUUID(), name: 'author', type: 'name', required: true },
+            { id: crypto.randomUUID(), name: 'content', type: 'string', required: true },
+            { id: crypto.randomUUID(), name: 'author', type: 'string', required: true },
             {
                 id: crypto.randomUUID(),
                 name: 'status',
-                type: 'enum',
+                type: 'string',
                 required: true,
-                enum: ['draft', 'published', 'archived'],
             },
             {
                 id: crypto.randomUUID(),
                 name: 'tags',
-                type: 'array',
+                type: 'string',
                 required: false,
+                isArray: true,
                 arrayOf: 'string',
-                length: 4,
+                arrayLength: 4,
             },
             {
                 id: crypto.randomUUID(),
@@ -103,7 +103,7 @@ const templates: Template[] = [
                 min: 0,
                 max: 10000,
             },
-            { id: crypto.randomUUID(), name: 'publishedAt', type: 'datetime', required: true },
+            { id: crypto.randomUUID(), name: 'publishedAt', type: 'string', required: true },
         ],
     },
     {
@@ -111,19 +111,18 @@ const templates: Template[] = [
         description: 'Event or calendar entry',
         icon: <Calendar className="w-5 h-5" />,
         schema: [
-            { id: crypto.randomUUID(), name: 'id', type: 'uuid', required: true },
+            { id: crypto.randomUUID(), name: 'id', type: 'string', required: true },
             { id: crypto.randomUUID(), name: 'title', type: 'string', required: true },
-            { id: crypto.randomUUID(), name: 'description', type: 'text', required: true },
-            { id: crypto.randomUUID(), name: 'location', type: 'address', required: false },
-            { id: crypto.randomUUID(), name: 'organizer', type: 'name', required: true },
-            { id: crypto.randomUUID(), name: 'startDate', type: 'datetime', required: true },
-            { id: crypto.randomUUID(), name: 'endDate', type: 'datetime', required: true },
+            { id: crypto.randomUUID(), name: 'description', type: 'string', required: true },
+            { id: crypto.randomUUID(), name: 'location', type: 'string', required: false },
+            { id: crypto.randomUUID(), name: 'organizer', type: 'string', required: true },
+            { id: crypto.randomUUID(), name: 'startDate', type: 'string', required: true },
+            { id: crypto.randomUUID(), name: 'endDate', type: 'string', required: true },
             {
                 id: crypto.randomUUID(),
                 name: 'type',
-                type: 'enum',
+                type: 'string',
                 required: true,
-                enum: ['conference', 'meeting', 'workshop', 'webinar'],
             },
             {
                 id: crypto.randomUUID(),
@@ -140,18 +139,17 @@ const templates: Template[] = [
         description: 'Business or organization profile',
         icon: <Database className="w-5 h-5" />,
         schema: [
-            { id: crypto.randomUUID(), name: 'id', type: 'uuid', required: true },
-            { id: crypto.randomUUID(), name: 'name', type: 'company', required: true },
-            { id: crypto.randomUUID(), name: 'website', type: 'url', required: true },
-            { id: crypto.randomUUID(), name: 'email', type: 'email', required: true },
-            { id: crypto.randomUUID(), name: 'phone', type: 'phone', required: true },
-            { id: crypto.randomUUID(), name: 'address', type: 'address', required: true },
+            { id: crypto.randomUUID(), name: 'id', type: 'string', required: true },
+            { id: crypto.randomUUID(), name: 'name', type: 'string', required: true },
+            { id: crypto.randomUUID(), name: 'website', type: 'string', required: true },
+            { id: crypto.randomUUID(), name: 'email', type: 'string', required: true },
+            { id: crypto.randomUUID(), name: 'phone', type: 'string', required: true },
+            { id: crypto.randomUUID(), name: 'address', type: 'string', required: true },
             {
                 id: crypto.randomUUID(),
                 name: 'industry',
-                type: 'enum',
+                type: 'string',
                 required: true,
-                enum: ['Technology', 'Finance', 'Healthcare', 'Education', 'Retail'],
             },
             {
                 id: crypto.randomUUID(),
@@ -215,17 +213,17 @@ export const SchemaTemplates = () => {
     };
 
     return (
-        <div className="p-4 pt-3 border-t">
+        <div className="p-4 pt-3 ">
             <h3 className="text-sm font-semibold mb-3">{t('templates.title')}</h3>
             <ScrollArea className="h-[220px]">
                 <div className="space-y-2 pr-3">
                     {templatesWithTranslation.map((template) => (
                         <div
                             key={template.name}
-                            className="p-3 border rounded-lg hover:bg-accent/50 transition-colors"
+                            className="p-3 border rounded-none hover:bg-accent/50 transition-colors"
                         >
                             <div className="flex items-start gap-3">
-                                <div className="shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                                <div className="shrink-0 w-10 h-10 rounded-none bg-primary/5 flex items-center justify-center text-primary">
                                     {template.icon}
                                 </div>
                                 <div className="flex-1 min-w-0">
@@ -237,7 +235,7 @@ export const SchemaTemplates = () => {
                                         variant="outline"
                                         size="sm"
                                         onClick={() => handleUseTemplate(template)}
-                                        className="h-7 text-xs"
+                                        className="h-7 text-xs rounded-none hover:cursor-pointer"
                                     >
                                         Use Template
                                     </Button>

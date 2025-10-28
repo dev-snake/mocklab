@@ -28,9 +28,13 @@
             "min": "Tối thiểu",
             "max": "Tối đa",
             "enumValues": "Giá trị Enum (phân cách bằng dấu phẩy)",
+            "enumValuesHint": "Các giá trị phân cách bằng dấu phẩy (vd: active, pending, completed)",
             "enumPlaceholder": "hoạt động,chờ,không hoạt động",
             "arrayItemType": "Kiểu phần tử mảng",
-            "arrayLength": "Độ dài mảng"
+            "arrayLength": "Độ dài mảng",
+            "isArray": "Là mảng",
+            "objectProperties": "Thuộc tính Object",
+            "objectPropertiesHint": "Định dạng: key:type, key:type (vd: username:string, age:number)"
         },
         "fieldTypes": {
             "string": "Chuỗi",
@@ -88,6 +92,7 @@
             "json": "JSON",
             "typescript": "TypeScript",
             "javascript": "JavaScript",
+            "zod": "Zod Schema",
             "noData": "Chưa có dữ liệu",
             "noDataDesc": "Cấu hình schema và nhấn 'Tạo dữ liệu' để xem kết quả.",
             "download": "Tải xuống"
@@ -97,7 +102,8 @@
             "copySuccess": "Đã sao chép vào clipboard",
             "copyError": "Sao chép thất bại",
             "fieldRequired": "Trường này là bắt buộc",
-            "invalidNumber": "Vui lòng nhập số hợp lệ"
+            "invalidNumber": "Vui lòng nhập số hợp lệ",
+            "duplicateField": "Tên trường đã tồn tại! Vui lòng sử dụng tên khác."
         },
         "language": {
             "english": "Tiếng Anh",

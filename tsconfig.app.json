@@ -23,14 +23,11 @@
         "erasableSyntaxOnly": true,
         "noFallthroughCasesInSwitch": true,
         "noUncheckedSideEffectImports": true,
-        
+
         /* Paths */
         "baseUrl": ".",
-        "ignoreDeprecations": "6.0",
         "paths": {
-            "@/*": ["./src/*"],
-            "@core/*": ["src/core/*"],
-            "@components/*": ["src/components/*"]
+            "@/*": ["./src/*"]
         }
     },
     "include": ["src", "src/main.tsx", "src/App.tsx"]

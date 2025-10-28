@@ -28,9 +28,13 @@
             "min": "Min",
             "max": "Max",
             "enumValues": "Enum Values (comma separated)",
+            "enumValuesHint": "Comma-separated values (e.g., active, pending, completed)",
             "enumPlaceholder": "active,pending,inactive",
             "arrayItemType": "Array Item Type",
-            "arrayLength": "Array Length"
+            "arrayLength": "Array Length",
+            "isArray": "Is Array",
+            "objectProperties": "Object Properties",
+            "objectPropertiesHint": "Format: key:type, key:type (e.g., username:string, age:number)"
         },
         "fieldTypes": {
             "string": "String",
@@ -88,6 +92,7 @@
             "json": "JSON",
             "typescript": "TypeScript",
             "javascript": "JavaScript",
+            "zod": "Zod Schema",
             "noData": "No data generated yet",
             "noDataDesc": "Configure your schema and click 'Generate Data' to see results.",
             "download": "Download"
@@ -97,7 +102,8 @@
             "copySuccess": "Copied to clipboard",
             "copyError": "Failed to copy",
             "fieldRequired": "This field is required",
-            "invalidNumber": "Please enter a valid number"
+            "invalidNumber": "Please enter a valid number",
+            "duplicateField": "Field name already exists! Please use a different name."
         },
         "language": {
             "english": "English",
