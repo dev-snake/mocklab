@@ -446,7 +446,7 @@ export const SchemaBuilder = () => {
                 />
 
                 {/* Templates */}
-                <ResizablePanel defaultSize={40} minSize={20} maxSize={60}>
+                <ResizablePanel defaultSize={40} minSize={20} maxSize={90}>
                     <SchemaTemplates />
                 </ResizablePanel>
             </ResizablePanelGroup>

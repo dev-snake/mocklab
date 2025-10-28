@@ -228,103 +228,176 @@ export const formatAsTypeScript = (
     schema?: FieldSchema[],
     interfaceName = 'MockData'
 ): string => {
-    const sample = data[0] || {};
+    const generatedInterfaces: string[] = [];
+    const interfaceNames = new Map<string, string>();
 
-    // Build a map of field names to their types from schema
-    const schemaTypeMap = new Map<string, string>();
-    if (schema) {
-        schema.forEach((field) => {
+    // Helper function to capitalize first letter
+    const capitalize = (str: string): string => {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    };
+
+    // Helper function to generate interface name
+    const generateInterfaceName = (fieldName: string, parentName?: string): string => {
+        const baseName = capitalize(fieldName);
+        return parentName ? `${parentName}${baseName}` : baseName;
+    };
+
+    // Recursive function to build interfaces for nested objects
+    const buildInterfaceForObject = (
+        fields: FieldSchema[] | undefined,
+        objName: string,
+        parentName?: string
+    ): string => {
+        if (!fields || fields.length === 0) {
+            return 'Record<string, any>';
+        }
+
+        const currentInterfaceName = generateInterfaceName(objName, parentName);
+
+        // Check if we already generated this interface
+        if (interfaceNames.has(objName)) {
+            return interfaceNames.get(objName)!;
+        }
+
+        const interfaceFields: string[] = [];
+
+        fields.forEach((field) => {
             let typeStr = '';
 
-            // Check isArray first, then handle type
             if (field.isArray && field.arrayOf) {
                 // Array type
                 if (field.arrayOf === 'object' && field.properties && field.properties.length > 0) {
-                    // Object array with properties: { name: string; age: number }[]
-                    const props = field.properties
-                        .map((prop) => {
-                            if (prop.isArray && prop.arrayOf) {
-                                return `${prop.name}: ${prop.arrayOf}[]`;
-                            }
-                            return `${prop.name}: ${prop.type === 'date' ? 'string' : prop.type}`;
-                        })
-                        .join('; ');
-                    typeStr = `{ ${props} }[]`;
+                    // Array of objects - create separate interface
+                    const arrayItemInterfaceName = buildInterfaceForObject(
+                        field.properties,
+                        field.name,
+                        currentInterfaceName
+                    );
+                    typeStr = `${arrayItemInterfaceName}[]`;
                 } else {
-                    // Simple array: string[], number[], etc.
-                    // Date arrays should be string[]
+                    // Simple array
                     typeStr = `${field.arrayOf === 'date' ? 'string' : field.arrayOf}[]`;
                 }
             } else if (field.type === 'object' && field.properties && field.properties.length > 0) {
-                // Non-array object with properties: { name: string; age: number }
-                const props = field.properties
-                    .map((prop) => {
-                        if (prop.isArray && prop.arrayOf) {
-                            return `${prop.name}: ${
-                                prop.arrayOf === 'date' ? 'string' : prop.arrayOf
-                            }[]`;
-                        }
-                        return `${prop.name}: ${prop.type === 'date' ? 'string' : prop.type}`;
-                    })
-                    .join('; ');
-                typeStr = `{ ${props} }`;
-            }
-            //  else if (field.type === 'bigint') {
-            //     typeStr = 'bigint';
-            // } 
-            
-            else if (field.type === 'symbol') {
+                // Nested object - create separate interface
+                typeStr = buildInterfaceForObject(
+                    field.properties,
+                    field.name,
+                    currentInterfaceName
+                );
+            } else if (field.type === 'symbol') {
                 typeStr = 'symbol';
             } else if (field.type === 'enum') {
-                // Enum type as union of string literals
                 if (field.enumValues && field.enumValues.length > 0) {
                     typeStr = field.enumValues.map((v) => `'${v}'`).join(' | ');
                 } else {
                     typeStr = 'string';
                 }
             } else if (field.type === 'date') {
-                typeStr = 'string'; // Date is represented as string in TypeScript
+                typeStr = 'string';
             } else if (field.type === 'object') {
-                typeStr = 'Record<string, any>'; // Generic object
+                typeStr = 'Record<string, any>';
             } else {
-                // string | number | boolean
                 typeStr = field.type;
             }
 
-            schemaTypeMap.set(field.name, typeStr);
+            interfaceFields.push(`  ${field.name}: ${typeStr};`);
         });
+
+        // Generate interface definition
+        const interfaceDef = `interface ${currentInterfaceName} {\n${interfaceFields.join(
+            '\n'
+        )}\n}`;
+        generatedInterfaces.push(interfaceDef);
+        interfaceNames.set(objName, currentInterfaceName);
+
+        return currentInterfaceName;
+    };
+
+    // Build interfaces from schema
+    if (schema && schema.length > 0) {
+        const mainInterfaceFields: string[] = [];
+
+        schema.forEach((field) => {
+            let typeStr = '';
+
+            if (field.isArray && field.arrayOf) {
+                // Array type
+                if (field.arrayOf === 'object' && field.properties && field.properties.length > 0) {
+                    // Array of objects - create separate interface
+                    const arrayItemInterfaceName = buildInterfaceForObject(
+                        field.properties,
+                        field.name,
+                        interfaceName
+                    );
+                    typeStr = `${arrayItemInterfaceName}[]`;
+                } else {
+                    // Simple array
+                    typeStr = `${field.arrayOf === 'date' ? 'string' : field.arrayOf}[]`;
+                }
+            } else if (field.type === 'object' && field.properties && field.properties.length > 0) {
+                // Nested object - create separate interface
+                typeStr = buildInterfaceForObject(field.properties, field.name, interfaceName);
+            } else if (field.type === 'symbol') {
+                typeStr = 'symbol';
+            } else if (field.type === 'enum') {
+                if (field.enumValues && field.enumValues.length > 0) {
+                    typeStr = field.enumValues.map((v) => `'${v}'`).join(' | ');
+                } else {
+                    typeStr = 'string';
+                }
+            } else if (field.type === 'date') {
+                typeStr = 'string';
+            } else if (field.type === 'object') {
+                typeStr = 'Record<string, any>';
+            } else {
+                typeStr = field.type;
+            }
+
+            mainInterfaceFields.push(`  ${field.name}: ${typeStr};`);
+        });
+
+        // Build main interface
+        const mainInterface = `interface ${interfaceName} {\n${mainInterfaceFields.join('\n')}\n}`;
+
+        // For JSON serialization
+        const jsonData = JSON.parse(formatAsJSON(data));
+
+        // Combine all interfaces (nested first, then main)
+        const allInterfaces =
+            generatedInterfaces.length > 0
+                ? generatedInterfaces.join('\n\n') + '\n\n' + mainInterface
+                : mainInterface;
+
+        return `${allInterfaces}\n\nexport const mockData: ${interfaceName}[] = ${JSON.stringify(
+            jsonData,
+            null,
+            2
+        )};`;
     }
 
+    // Fallback if no schema provided
+    const sample = data[0] || {};
     const interfaceFields = Object.entries(sample)
         .map(([key, value]) => {
             let typeStr: string;
-
-            // Check if we have schema type info
-            if (schemaTypeMap.has(key)) {
-                typeStr = schemaTypeMap.get(key)!;
+            if (typeof value === 'bigint') {
+                typeStr = 'bigint';
+            } else if (typeof value === 'symbol') {
+                typeStr = 'symbol';
+            } else if (Array.isArray(value)) {
+                const arrayType = value.length > 0 ? typeof value[0] : 'any';
+                typeStr = `${arrayType}[]`;
+            } else if (typeof value === 'object' && value !== null) {
+                typeStr = 'Record<string, any>';
             } else {
-                // Fallback to runtime type detection
-                if (typeof value === 'bigint') {
-                    typeStr = 'bigint';
-                } else if (typeof value === 'symbol') {
-                    typeStr = 'symbol';
-                } else if (Array.isArray(value)) {
-                    const arrayType = value.length > 0 ? typeof value[0] : 'any';
-                    typeStr = `${arrayType}[]`;
-                } else if (typeof value === 'object' && value !== null) {
-                    typeStr = 'Record<string, any>';
-                } else {
-                    typeStr = typeof value;
-                }
+                typeStr = typeof value;
             }
-
             return `  ${key}: ${typeStr};`;
         })
         .join('\n');
 
-    // For JSON serialization, convert bigint and symbol to string using formatAsJSON
     const jsonData = JSON.parse(formatAsJSON(data));
-
     return `interface ${interfaceName} {\n${interfaceFields}\n}\n\nexport const mockData: ${interfaceName}[] = ${JSON.stringify(
         jsonData,
         null,

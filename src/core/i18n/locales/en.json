@@ -65,7 +65,11 @@
             "event": "Event/Calendar",
             "eventDesc": "Event information schema",
             "company": "Company",
-            "companyDesc": "Business information schema"
+            "companyDesc": "Business information schema",
+            "pasteJSON": "Paste JSON",
+            "pasteJSONDesc": "Paste sample JSON data or schema to automatically generate schema",
+            "pasteJSONPlaceholder": "{\n  \"id\": 1,\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\"\n}",
+            "generateSchema": "Generate Schema"
         },
         "generatorOptions": {
             "title": "Generator Options",
@@ -103,7 +107,11 @@
             "copyError": "Failed to copy",
             "fieldRequired": "This field is required",
             "invalidNumber": "Please enter a valid number",
-            "duplicateField": "Field name already exists! Please use a different name."
+            "duplicateField": "Field name already exists! Please use a different name.",
+            "emptyJSON": "Please enter JSON data",
+            "invalidJSON": "Invalid JSON data",
+            "jsonParsedSuccess": "Schema generated successfully from JSON",
+            "jsonParseError": "Failed to generate schema from JSON"
         },
         "language": {
             "english": "English",
