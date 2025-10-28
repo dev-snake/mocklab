@@ -22,7 +22,16 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/componen
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from 'sonner';
 
-const fieldTypes: FieldType[] = ['string', 'number', 'boolean', 'object', 'bigint', 'symbol'];
+const fieldTypes: FieldType[] = [
+    'string',
+    'number',
+    'boolean',
+    'object',
+    'bigint',
+    'symbol',
+    'enum',
+    'date',
+];
 
 export const SchemaBuilder = () => {
     const { t } = useTranslation();
@@ -186,6 +195,41 @@ export const SchemaBuilder = () => {
                         </div>
                     )}
 
+                    {editingField.type === 'enum' && (
+                        <div className="space-y-2">
+                            <Label htmlFor="enum-values">
+                                {t('schemaBuilder.enumValues') || 'Enum Values'}
+                            </Label>
+                            <Input
+                                id="enum-values"
+                                className="rounded-none"
+                                placeholder="active, pending, completed"
+                                onChange={(e) => {
+                                    const input = e.target.value;
+                                    if (input.trim()) {
+                                        const values = input
+                                            .split(',')
+                                            .map((v) => v.trim())
+                                            .filter(Boolean);
+                                        setEditingField({
+                                            ...editingField,
+                                            enumValues: values.length > 0 ? values : undefined,
+                                        });
+                                    } else {
+                                        setEditingField({
+                                            ...editingField,
+                                            enumValues: undefined,
+                                        });
+                                    }
+                                }}
+                            />
+                            <p className="text-xs text-muted-foreground">
+                                {t('schemaBuilder.enumValuesHint') ||
+                                    'Comma-separated values (e.g., active, pending, completed)'}
+                            </p>
+                        </div>
+                    )}
+
                     {editingField.type === 'object' && (
                         <div className="space-y-2">
                             <Label htmlFor="object-props">
@@ -344,6 +388,10 @@ export const SchemaBuilder = () => {
                                                         ? `{ ${field.properties
                                                               .map((p) => `${p.name}: ${p.type}`)
                                                               .join(', ')} }`
+                                                        : field.type === 'enum' &&
+                                                          field.enumValues &&
+                                                          field.enumValues.length > 0
+                                                        ? `enum (${field.enumValues.length})`
                                                         : field.type}
                                                 </span>
                                                 {field.required && (
@@ -355,6 +403,13 @@ export const SchemaBuilder = () => {
                                                     Array length: {field.arrayLength || 3}
                                                 </div>
                                             )}
+                                            {field.type === 'enum' &&
+                                                field.enumValues &&
+                                                field.enumValues.length > 0 && (
+                                                    <div className="text-xs text-muted-foreground">
+                                                        Values: {field.enumValues.join(', ')}
+                                                    </div>
+                                                )}
                                             {field.type === 'number' &&
                                                 (field.min !== undefined ||
                                                     field.max !== undefined) && (

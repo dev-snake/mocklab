@@ -28,6 +28,7 @@
             "min": "Tối thiểu",
             "max": "Tối đa",
             "enumValues": "Giá trị Enum (phân cách bằng dấu phẩy)",
+            "enumValuesHint": "Các giá trị phân cách bằng dấu phẩy (vd: active, pending, completed)",
             "enumPlaceholder": "hoạt động,chờ,không hoạt động",
             "arrayItemType": "Kiểu phần tử mảng",
             "arrayLength": "Độ dài mảng",

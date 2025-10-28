@@ -28,6 +28,7 @@
             "min": "Min",
             "max": "Max",
             "enumValues": "Enum Values (comma separated)",
+            "enumValuesHint": "Comma-separated values (e.g., active, pending, completed)",
             "enumPlaceholder": "active,pending,inactive",
             "arrayItemType": "Array Item Type",
             "arrayLength": "Array Length",
