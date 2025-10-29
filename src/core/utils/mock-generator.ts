@@ -244,9 +244,7 @@ export const formatAsTypeScript = (
             let typeStr = '';
 
             if (field.isArray && field.arrayOf) {
-                // Array type
                 if (field.arrayOf === 'object' && field.properties && field.properties.length > 0) {
-                    // Array of objects - create separate interface
                     const arrayItemInterfaceName = buildInterfaceForObject(
                         field.properties,
                         field.name,
@@ -254,11 +252,9 @@ export const formatAsTypeScript = (
                     );
                     typeStr = `${arrayItemInterfaceName}[]`;
                 } else {
-                    // Simple array
                     typeStr = `${field.arrayOf === 'date' ? 'string' : field.arrayOf}[]`;
                 }
             } else if (field.type === 'object' && field.properties && field.properties.length > 0) {
-                // Nested object - create separate interface
                 typeStr = buildInterfaceForObject(
                     field.properties,
                     field.name,
@@ -299,9 +295,7 @@ export const formatAsTypeScript = (
             let typeStr = '';
 
             if (field.isArray && field.arrayOf) {
-                // Array type
                 if (field.arrayOf === 'object' && field.properties && field.properties.length > 0) {
-                    // Array of objects - create separate interface
                     const arrayItemInterfaceName = buildInterfaceForObject(
                         field.properties,
                         field.name,
@@ -309,11 +303,9 @@ export const formatAsTypeScript = (
                     );
                     typeStr = `${arrayItemInterfaceName}[]`;
                 } else {
-                    // Simple array
                     typeStr = `${field.arrayOf === 'date' ? 'string' : field.arrayOf}[]`;
                 }
             } else if (field.type === 'object' && field.properties && field.properties.length > 0) {
-                // Nested object - create separate interface
                 typeStr = buildInterfaceForObject(field.properties, field.name, interfaceName);
             } else if (field.type === 'symbol') {
                 typeStr = 'symbol';
@@ -513,7 +505,7 @@ export const formatAsZodSchema = (schema: FieldSchema[], schemaName = 'mockDataS
                     }
                     break;
                 case 'date':
-                    zodCode = 'z.string()'; // Date is represented as string
+                    zodCode = 'z.string()';
                     break;
                 case 'object':
                     zodCode = 'z.record(z.string(), z.any())';
