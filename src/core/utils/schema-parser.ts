@@ -7,7 +7,6 @@ export const parseJSONToSchema = (jsonString: string): FieldSchema[] => {
     try {
         const data = JSON.parse(jsonString);
 
-        // If it's an array, take the first item
         const sample = Array.isArray(data) ? data[0] : data;
 
         if (!sample || typeof sample !== 'object') {
@@ -44,7 +43,6 @@ const extractSchemaFromObject = (obj: any): FieldSchema[] => {
 const extractFieldSchema = (name: string, value: any): FieldSchema | null => {
     const id = crypto.randomUUID();
 
-    // Handle null or undefined
     if (value === null || value === undefined) {
         return {
             id,
@@ -54,10 +52,8 @@ const extractFieldSchema = (name: string, value: any): FieldSchema | null => {
         };
     }
 
-    // Handle array
     if (Array.isArray(value)) {
         if (value.length === 0) {
-            // Empty array - default to string array
             return {
                 id,
                 name,
@@ -72,7 +68,6 @@ const extractFieldSchema = (name: string, value: any): FieldSchema | null => {
         const firstItem = value[0];
         const itemType = inferType(firstItem);
 
-        // If array of objects, extract properties from first object
         if (itemType === 'object' && typeof firstItem === 'object') {
             const properties = extractSchemaFromObject(firstItem);
             return {
@@ -98,7 +93,6 @@ const extractFieldSchema = (name: string, value: any): FieldSchema | null => {
         };
     }
 
-    // Handle object
     if (typeof value === 'object') {
         const properties = extractSchemaFromObject(value);
         return {
@@ -110,7 +104,6 @@ const extractFieldSchema = (name: string, value: any): FieldSchema | null => {
         };
     }
 
-    // Handle primitive types
     const type = inferType(value);
     const field: FieldSchema = {
         id,
@@ -119,15 +112,12 @@ const extractFieldSchema = (name: string, value: any): FieldSchema | null => {
         required: true,
     };
 
-    // Add constraints for numbers
     if (type === 'number' && typeof value === 'number') {
         field.min = 0;
         field.max = Math.max(100, Math.ceil(value * 2));
     }
 
-    // Add length for strings
     if (type === 'string' && typeof value === 'string') {
-        // Check if it's a date string
         if (isDateString(value)) {
             field.type = 'date';
         }
@@ -148,7 +138,6 @@ const inferType = (value: any): FieldType => {
 
     switch (jsType) {
         case 'string':
-            // Check for special string formats
             if (isDateString(value)) {
                 return 'date';
             }
@@ -159,7 +148,7 @@ const inferType = (value: any): FieldType => {
             return 'boolean';
         case 'object':
             if (Array.isArray(value)) {
-                return 'string'; // Default for empty arrays
+                return 'string';
             }
             return 'object';
         case 'symbol':
@@ -173,7 +162,6 @@ const inferType = (value: any): FieldType => {
  * Check if string is a date string
  */
 const isDateString = (value: string): boolean => {
-    // Check for ISO 8601 format
     const isoDatePattern = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?)?$/;
     if (isoDatePattern.test(value)) {
         const date = new Date(value);
