@@ -10,12 +10,7 @@ interface CodeBlockProps {
     maxHeight?: string;
 }
 
-export const CodeBlock = ({
-    code,
-    language = 'json',
-    showLineNumbers = true,
-}: // maxHeight = '500px',
-CodeBlockProps) => {
+export const CodeBlock = ({ code, language = 'json', showLineNumbers = true }: CodeBlockProps) => {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
@@ -26,49 +21,39 @@ CodeBlockProps) => {
 
     const lines = code.split('\n');
 
-    // Enhanced syntax highlighting with proper escaping
     const highlightLine = (line: string) => {
-        // First, escape HTML entities
         let highlighted = line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-        // For JSON - highlight strings with their quotes (do this first to protect content)
         if (language === 'json') {
-            // String values (after colon)
             highlighted = highlighted.replace(
                 /:\s*"([^"]*)"/g,
                 ': <span class="text-green-600 dark:text-green-400">"$1"</span>'
             );
 
-            // Property keys (before colon)
             highlighted = highlighted.replace(
                 /"([^"]+)":/g,
                 '<span class="text-sky-600 dark:text-sky-400 font-medium">"$1"</span>:'
             );
 
-            // Numbers
             highlighted = highlighted.replace(
                 /:\s*(\d+\.?\d*)/g,
                 ': <span class="text-blue-600 dark:text-blue-400 font-semibold">$1</span>'
             );
 
-            // Booleans and null
             highlighted = highlighted.replace(
                 /:\s*(true|false|null)/g,
                 ': <span class="text-orange-500 dark:text-orange-400 font-semibold">$1</span>'
             );
         } else {
-            // For TypeScript/JavaScript - use markers to prevent double-replacement
             const MARKER = '___SPAN___';
             const spans: string[] = [];
             let spanIndex = 0;
 
-            // Helper to store span and return marker
             const storeSpan = (span: string) => {
                 spans.push(span);
                 return `${MARKER}${spanIndex++}${MARKER}`;
             };
 
-            // 1. Strings with quotes FIRST (protect content inside strings including keys like "type")
             highlighted = highlighted.replace(/"([^"]*)"/g, (_match, content) => {
                 return storeSpan(
                     `<span class="text-green-600 dark:text-green-400">"${content}"</span>`
@@ -85,7 +70,6 @@ CodeBlockProps) => {
                 );
             });
 
-            // 2. Keywords (after strings are protected)
             const keywords = [
                 'interface',
                 'export',
@@ -111,35 +95,30 @@ CodeBlockProps) => {
                 });
             });
 
-            // 3. Numbers (standalone)
             highlighted = highlighted.replace(/\b(\d+\.?\d*)\b/g, (match) => {
                 return storeSpan(
                     `<span class="text-blue-600 dark:text-blue-400 font-semibold">${match}</span>`
                 );
             });
 
-            // 4. Booleans and special values
             highlighted = highlighted.replace(/\b(true|false|null|undefined)\b/g, (match) => {
                 return storeSpan(
                     `<span class="text-orange-500 dark:text-orange-400 font-semibold">${match}</span>`
                 );
             });
 
-            // 5. Comments
             highlighted = highlighted.replace(/(\/\/.*$)/g, (match) => {
                 return storeSpan(
                     `<span class="text-gray-500 dark:text-gray-400 italic">${match}</span>`
                 );
             });
 
-            // 6. Types (after colon in TS)
             highlighted = highlighted.replace(/:\s*([A-Z][a-zA-Z0-9]*)/g, (_match, type) => {
                 return `: ${storeSpan(
                     `<span class="text-cyan-600 dark:text-cyan-400 font-medium">${type}</span>`
                 )}`;
             });
 
-            // Finally, restore all spans
             spans.forEach((span, index) => {
                 highlighted = highlighted.replace(`${MARKER}${index}${MARKER}`, span);
             });
@@ -156,7 +135,6 @@ CodeBlockProps) => {
 
     return (
         <div className="relative group border rounded-none overflow-hidden bg-card shadow-sm">
-            {/* Header with language label and copy button */}
             <div className="flex items-center justify-between px-4 py-2.5 bg-muted/50 border-b backdrop-blur-sm">
                 <div className="flex items-center gap-3">
                     <div className="flex gap-1.5">
@@ -190,7 +168,6 @@ CodeBlockProps) => {
                 </Button>
             </div>
 
-            {/* Code content */}
             <ScrollArea className="w-full h-[500px]">
                 <div className="bg-muted/20 min-h-0">
                     <pre className="p-4 text-[13px] font-mono leading-relaxed overflow-x-auto">
