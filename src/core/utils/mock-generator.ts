@@ -1,4 +1,3 @@
-// Mock Data Generator Library
 import { z } from 'zod';
 
 export const FieldTypeSchema = z.enum([
@@ -6,7 +5,6 @@ export const FieldTypeSchema = z.enum([
     'number',
     'boolean',
     'object',
-    // 'bigint',
     'symbol',
     'enum',
     'date',
@@ -23,13 +21,10 @@ export interface FieldSchema {
     min?: number;
     max?: number;
     length?: number;
-    // For arrays - represented as object type with special handling
     isArray?: boolean;
     arrayOf?: FieldType;
     arrayLength?: number;
-    // For objects - define properties
     properties?: FieldSchema[];
-    // For enum - define possible values
     enumValues?: string[];
 }
 
@@ -43,7 +38,6 @@ export interface GeneratorOptions {
     customGenerator?: (field: FieldSchema, index: number) => any;
 }
 
-// Random generators
 const randomString = (length = 10): string => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
@@ -67,7 +61,7 @@ const randomSymbol = (): symbol => Symbol(randomString(8));
 
 const randomEnum = (values?: string[]): string => {
     if (!values || values.length === 0) {
-        return 'VALUE_1'; // Default enum value
+        return 'VALUE_1';
     }
     return values[Math.floor(Math.random() * values.length)];
 };
@@ -87,20 +81,17 @@ const randomObject = (properties?: FieldSchema[]): any => {
         });
         return obj;
     }
-    // Default object with common properties
     return {
         id: randomString(8),
         value: randomString(10),
     };
 };
 
-// Helper function to generate simple values without recursion issues
 const generateSimpleValue = (field: FieldSchema): any => {
     const map: Record<FieldType, () => any> = {
         string: () => (field.length ? randomString(field.length) : randomString()),
         number: () => randomNumber(field.min || 0, field.max || 100),
         boolean: () => randomBoolean(),
-        // bigint: () => randomBigInt(field.min, field.max),
         symbol: () => randomSymbol(),
         object: () => randomObject(field.properties),
         enum: () => randomEnum(field.enumValues),
@@ -109,7 +100,6 @@ const generateSimpleValue = (field: FieldSchema): any => {
     return map[field.type]() || randomString();
 };
 
-// Realistic generators
 const realisticGenerators: Record<string, (field: FieldSchema) => any> = {
     string: (field: FieldSchema) => (field.length ? randomString(field.length) : randomString()),
     number: (field: FieldSchema) => randomNumber(field.min || 0, field.max || 100),
@@ -121,7 +111,6 @@ const realisticGenerators: Record<string, (field: FieldSchema) => any> = {
     date: randomDate,
 };
 
-// Sequential generators
 const sequentialGenerators: Record<string, (field: FieldSchema, index: number) => any> = {
     string: (_field: FieldSchema, index: number) => `item_${index}`,
     number: (_field: FieldSchema, index: number) => index,
@@ -151,9 +140,7 @@ const sequentialGenerators: Record<string, (field: FieldSchema, index: number) =
     },
 };
 
-// Generate single value
 const generateValue = (field: FieldSchema, options: GeneratorOptions, index: number): any => {
-    // Handle arrays (represented as isArray flag)
     if (field.isArray) {
         const arrayLength = field.arrayLength || 3;
         const arrayType = field.arrayOf || 'string';
@@ -190,7 +177,6 @@ const generateValue = (field: FieldSchema, options: GeneratorOptions, index: num
     }
 };
 
-// Main generator function
 export const generateMockData = (schema: FieldSchema[], options: GeneratorOptions): any[] => {
     const result: any[] = [];
 
@@ -198,7 +184,6 @@ export const generateMockData = (schema: FieldSchema[], options: GeneratorOption
         const item: any = {};
 
         schema.forEach((field) => {
-            // Generate all fields, including optional ones
             item[field.name] = generateValue(field, options, i);
         });
 
@@ -208,15 +193,13 @@ export const generateMockData = (schema: FieldSchema[], options: GeneratorOption
     return result;
 };
 
-// Export formatters
 export const formatAsJSON = (data: any[]): string => {
-    // Custom replacer to handle bigint and symbol
     const replacer = (_key: string, value: any) => {
         if (typeof value === 'bigint') {
-            return value.toString(); // Convert bigint to string
+            return value.toString();
         }
         if (typeof value === 'symbol') {
-            return value.toString(); // Convert symbol to string
+            return value.toString();
         }
         return value;
     };
@@ -231,18 +214,15 @@ export const formatAsTypeScript = (
     const generatedInterfaces: string[] = [];
     const interfaceNames = new Map<string, string>();
 
-    // Helper function to capitalize first letter
     const capitalize = (str: string): string => {
         return str.charAt(0).toUpperCase() + str.slice(1);
     };
 
-    // Helper function to generate interface name
     const generateInterfaceName = (fieldName: string, parentName?: string): string => {
         const baseName = capitalize(fieldName);
         return parentName ? `${parentName}${baseName}` : baseName;
     };
 
-    // Recursive function to build interfaces for nested objects
     const buildInterfaceForObject = (
         fields: FieldSchema[] | undefined,
         objName: string,
@@ -254,7 +234,6 @@ export const formatAsTypeScript = (
 
         const currentInterfaceName = generateInterfaceName(objName, parentName);
 
-        // Check if we already generated this interface
         if (interfaceNames.has(objName)) {
             return interfaceNames.get(objName)!;
         }
@@ -304,7 +283,6 @@ export const formatAsTypeScript = (
             interfaceFields.push(`  ${field.name}: ${typeStr};`);
         });
 
-        // Generate interface definition
         const interfaceDef = `interface ${currentInterfaceName} {\n${interfaceFields.join(
             '\n'
         )}\n}`;
@@ -314,7 +292,6 @@ export const formatAsTypeScript = (
         return currentInterfaceName;
     };
 
-    // Build interfaces from schema
     if (schema && schema.length > 0) {
         const mainInterfaceFields: string[] = [];
 
@@ -357,13 +334,10 @@ export const formatAsTypeScript = (
             mainInterfaceFields.push(`  ${field.name}: ${typeStr};`);
         });
 
-        // Build main interface
         const mainInterface = `interface ${interfaceName} {\n${mainInterfaceFields.join('\n')}\n}`;
 
-        // For JSON serialization
         const jsonData = JSON.parse(formatAsJSON(data));
 
-        // Combine all interfaces (nested first, then main)
         const allInterfaces =
             generatedInterfaces.length > 0
                 ? generatedInterfaces.join('\n\n') + '\n\n' + mainInterface
@@ -376,7 +350,6 @@ export const formatAsTypeScript = (
         )};`;
     }
 
-    // Fallback if no schema provided
     const sample = data[0] || {};
     const interfaceFields = Object.entries(sample)
         .map(([key, value]) => {
@@ -406,22 +379,18 @@ export const formatAsTypeScript = (
 };
 
 export const formatAsJavaScript = (data: any[], variableName = 'mockData'): string => {
-    // Use formatAsJSON to properly serialize bigint/symbol
     return `export const ${variableName} = ${formatAsJSON(data)};`;
 };
 
-// Create Zod schema from FieldSchema
 export const createZodSchema = (schema: FieldSchema[]): z.ZodObject<any> => {
     const shape: Record<string, z.ZodTypeAny> = {};
 
     schema.forEach((field) => {
         let zodType: z.ZodTypeAny;
 
-        // Handle object types with properties
         if (field.type === 'object' && field.properties && field.properties.length > 0) {
             zodType = createZodSchema(field.properties);
         } else {
-            // Handle primitive types
             switch (field.type) {
                 case 'string':
                     zodType = z.string();
@@ -441,15 +410,6 @@ export const createZodSchema = (schema: FieldSchema[]): z.ZodObject<any> => {
                 case 'boolean':
                     zodType = z.boolean();
                     break;
-                // case 'bigint':
-                //     zodType = z.bigint();
-                //     if (field.min !== undefined) {
-                //         zodType = (zodType as z.ZodBigInt).min(BigInt(field.min));
-                //     }
-                //     if (field.max !== undefined) {
-                //         zodType = (zodType as z.ZodBigInt).max(BigInt(field.max));
-                //     }
-                //     break;
                 case 'symbol':
                     zodType = z.symbol();
                     break;
@@ -461,7 +421,7 @@ export const createZodSchema = (schema: FieldSchema[]): z.ZodObject<any> => {
                     }
                     break;
                 case 'date':
-                    zodType = z.string(); // Date is represented as string
+                    zodType = z.string();
                     break;
                 case 'object':
                     zodType = z.record(z.string(), z.any());
@@ -471,7 +431,6 @@ export const createZodSchema = (schema: FieldSchema[]): z.ZodObject<any> => {
             }
         }
 
-        // Handle arrays
         if (field.isArray) {
             zodType = z.array(zodType);
             if (field.arrayLength) {
@@ -479,7 +438,6 @@ export const createZodSchema = (schema: FieldSchema[]): z.ZodObject<any> => {
             }
         }
 
-        // Handle optional fields
         if (field.required === false) {
             zodType = zodType.optional();
         }
@@ -490,7 +448,6 @@ export const createZodSchema = (schema: FieldSchema[]): z.ZodObject<any> => {
     return z.object(shape);
 };
 
-// Validate data against schema
 export const validateData = (
     data: any[],
     schema: FieldSchema[]
@@ -511,7 +468,6 @@ export const validateData = (
     }
 };
 
-// Generate Zod schema code as string
 export const formatAsZodSchema = (schema: FieldSchema[], schemaName = 'mockDataSchema'): string => {
     const generateZodType = (field: FieldSchema, indent = '  '): string => {
         let zodCode = '';

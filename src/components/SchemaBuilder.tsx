@@ -22,16 +22,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/componen
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from 'sonner';
 
-const fieldTypes: FieldType[] = [
-    'string',
-    'number',
-    'boolean',
-    'object',
-    // 'bigint',
-    'symbol',
-    'enum',
-    'date',
-];
+const fieldTypes: FieldType[] = ['string', 'number', 'boolean', 'object', 'symbol', 'enum', 'date'];
 
 export const SchemaBuilder = () => {
     const { t } = useTranslation();
@@ -46,7 +37,6 @@ export const SchemaBuilder = () => {
     const handleAddField = () => {
         if (!editingField.name) return;
 
-        // Check for duplicate field names
         const isDuplicate = schema.some(
             (field) => field.name.toLowerCase() === editingField.name!.toLowerCase()
         );
@@ -76,7 +66,6 @@ export const SchemaBuilder = () => {
                     {t('schemaBuilder.title')}
                 </h2>
 
-                {/* Add Field Form */}
                 <div className="space-y-3 py-3 sm:py-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div className="space-y-2">
@@ -160,43 +149,6 @@ export const SchemaBuilder = () => {
                         </div>
                     )}
 
-                    {/* {editingField.type === 'bigint' && (
-                        <div className="grid grid-cols-2 gap-3">
-                            <div className="space-y-2">
-                                <Label htmlFor="bigint-min">{t('schemaBuilder.min')}</Label>
-                                <Input
-                                    id="bigint-min"
-                                    type="number"
-                                    className="rounded-none"
-                                    placeholder="0"
-                                    value={editingField.min ?? ''}
-                                    onChange={(e) =>
-                                        setEditingField({
-                                            ...editingField,
-                                            min: parseInt(e.target.value) || 0,
-                                        })
-                                    }
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="bigint-max">{t('schemaBuilder.max')}</Label>
-                                <Input
-                                    id="bigint-max"
-                                    type="number"
-                                    className="rounded-none"
-                                    placeholder="1000000"
-                                    value={editingField.max ?? ''}
-                                    onChange={(e) =>
-                                        setEditingField({
-                                            ...editingField,
-                                            max: parseInt(e.target.value) || 1000000,
-                                        })
-                                    }
-                                />
-                            </div>
-                        </div>
-                    )} */}
-
                     {editingField.type === 'enum' && (
                         <div className="space-y-2">
                             <Label htmlFor="enum-values">
@@ -245,7 +197,6 @@ export const SchemaBuilder = () => {
                                     const input = e.target.value;
                                     if (input.trim()) {
                                         try {
-                                            // Parse format: "key:type, key:type"
                                             const props = input
                                                 .split(',')
                                                 .map((prop) => prop.trim())
@@ -282,7 +233,6 @@ export const SchemaBuilder = () => {
                         </div>
                     )}
 
-                    {/* Array configuration */}
                     <div className="flex items-center space-x-2">
                         <Checkbox
                             id="field-is-array"
@@ -295,7 +245,6 @@ export const SchemaBuilder = () => {
                                         isArray: true,
                                         arrayOf: editingField.type,
                                         arrayLength: editingField.arrayLength || 3,
-                                        // Keep properties for object type arrays
                                     });
                                 } else {
                                     setEditingField({
@@ -351,9 +300,7 @@ export const SchemaBuilder = () => {
                 </div>
             </div>
 
-            {/* Resizable Field List and Templates */}
             <ResizablePanelGroup direction="vertical" className="flex-1 min-h-0">
-                {/* Field List */}
                 <ResizablePanel defaultSize={60} minSize={30}>
                     <ScrollArea className="h-full">
                         <div className="p-2 sm:p-4 space-y-2 ">
@@ -447,7 +394,6 @@ export const SchemaBuilder = () => {
                     className="hover:bg-primary/20 active:bg-primary/30 transition-colors"
                 />
 
-                {/* Templates */}
                 <ResizablePanel defaultSize={40} minSize={20} maxSize={90}>
                     <SchemaTemplates />
                 </ResizablePanel>
