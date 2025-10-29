@@ -100,8 +100,8 @@ export const DataPreview = () => {
     if (generatedData.length === 0) {
         return (
             <div className="flex flex-col h-full">
-                <div className="p-4 border-b">
-                    <h3 className="text-lg font-semibold">{t('dataPreview.title')}</h3>
+                <div className="p-3 sm:p-4 border-b">
+                    <h3 className="text-base sm:text-lg font-semibold">{t('dataPreview.title')}</h3>
                 </div>
                 <Empty>
                     <EmptyHeader>
@@ -117,27 +117,29 @@ export const DataPreview = () => {
     }
     return (
         <div className="flex flex-col h-full">
-            <div className="p-4 border-b">
-                <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">{t('dataPreview.title')}</h3>
-                    <div className="flex gap-2">
+            <div className="p-3 sm:p-4 border-b">
+                <div className="flex items-center justify-between gap-2">
+                    <h3 className="text-base sm:text-lg font-semibold">{t('dataPreview.title')}</h3>
+                    <div className="flex gap-1 sm:gap-2">
                         <Button
                             variant="outline"
-                            className="hover:cursor-pointer rounded-none"
+                            className="hover:cursor-pointer rounded-none text-xs sm:text-sm"
                             size="sm"
                             onClick={handleCopy}
                         >
-                            <Copy className="w-4 h-4 mr-2" />
-                            {copied ? t('common.copied') : t('common.copy')}
+                            <Copy className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+                            <span className="hidden sm:inline">
+                                {copied ? t('common.copied') : t('common.copy')}
+                            </span>
                         </Button>
                         <Button
                             variant="outline"
                             size="sm"
-                            className="hover:cursor-pointer rounded-none"
+                            className="hover:cursor-pointer rounded-none text-xs sm:text-sm"
                             onClick={handleDownload}
                         >
-                            <Download className="w-4 h-4 mr-2" />
-                            {t('dataPreview.download')}
+                            <Download className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+                            <span className="hidden sm:inline">{t('dataPreview.download')}</span>
                         </Button>
                     </div>
                 </div>
@@ -148,33 +150,45 @@ export const DataPreview = () => {
                 onValueChange={(v) => setActiveTab(v as any)}
                 className="flex-1 flex flex-col"
             >
-                <div className="border-b px-4 py-2">
-                    <TabsList className="rounded-none">
-                        <TabsTrigger value="table" className="hover:cursor-pointer rounded-none">
-                            <FileJson className="w-4 h-4 mr-2" />
-                            {t('dataPreview.table')}
+                <div className="border-b px-2 sm:px-4 py-2">
+                    <TabsList className="rounded-none w-full sm:w-auto overflow-x-auto">
+                        <TabsTrigger
+                            value="table"
+                            className="hover:cursor-pointer rounded-none text-xs sm:text-sm px-2 sm:px-3"
+                        >
+                            <FileJson className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+                            <span className="hidden sm:inline">{t('dataPreview.table')}</span>
                         </TabsTrigger>
-                        <TabsTrigger value="json" className="hover:cursor-pointer rounded-none">
-                            <FileJson className="w-4 h-4 mr-2" />
-                            {t('dataPreview.json')}
+                        <TabsTrigger
+                            value="json"
+                            className="hover:cursor-pointer rounded-none text-xs sm:text-sm px-2 sm:px-3"
+                        >
+                            <FileJson className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+                            <span className="hidden sm:inline">{t('dataPreview.json')}</span>
                         </TabsTrigger>
                         <TabsTrigger
                             value="typescript"
-                            className="hover:cursor-pointer rounded-none"
+                            className="hover:cursor-pointer rounded-none text-xs sm:text-sm px-2 sm:px-3"
                         >
-                            <FileCode className="w-4 h-4 mr-2" />
-                            {t('dataPreview.typescript')}
+                            <FileCode className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+                            <span className="hidden sm:inline">{t('dataPreview.typescript')}</span>
+                            <span className="sm:hidden">TS</span>
                         </TabsTrigger>
                         <TabsTrigger
                             value="javascript"
-                            className="hover:cursor-pointer rounded-none"
+                            className="hover:cursor-pointer rounded-none text-xs sm:text-sm px-2 sm:px-3"
                         >
-                            <FileCode className="w-4 h-4 mr-2" />
-                            {t('dataPreview.javascript')}
+                            <FileCode className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+                            <span className="hidden sm:inline">{t('dataPreview.javascript')}</span>
+                            <span className="sm:hidden">JS</span>
                         </TabsTrigger>
-                        <TabsTrigger value="zod" className="hover:cursor-pointer rounded-none">
-                            <FileCode className="w-4 h-4 mr-2" />
-                            {t('dataPreview.zod')}
+                        <TabsTrigger
+                            value="zod"
+                            className="hover:cursor-pointer rounded-none text-xs sm:text-sm px-2 sm:px-3"
+                        >
+                            <FileCode className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+                            <span className="hidden sm:inline">{t('dataPreview.zod')}</span>
+                            <span className="sm:hidden">Zod</span>
                         </TabsTrigger>
                     </TabsList>
                 </div>
@@ -182,25 +196,35 @@ export const DataPreview = () => {
                 <div className="flex-1 overflow-hidden">
                     <TabsContent value="table" className="h-full m-0">
                         <ScrollArea className="h-full">
-                            <div className="p-4">
-                                <div className="border rounded-none overflow-hidden">
+                            <div className="p-2 sm:p-4">
+                                <div className="border rounded-none overflow-hidden overflow-x-auto">
                                     <Table>
                                         <TableHeader className="bg-muted">
                                             <TableRow>
-                                                <TableHead className="w-16">#</TableHead>
+                                                <TableHead className="w-12 sm:w-16 text-xs sm:text-sm">
+                                                    #
+                                                </TableHead>
                                                 {Object.keys(generatedData[0] || {}).map((key) => (
-                                                    <TableHead key={key}>{key}</TableHead>
+                                                    <TableHead
+                                                        key={key}
+                                                        className="text-xs sm:text-sm"
+                                                    >
+                                                        {key}
+                                                    </TableHead>
                                                 ))}
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
                                             {generatedData.map((item, index) => (
                                                 <TableRow key={index}>
-                                                    <TableCell className="text-muted-foreground font-medium">
+                                                    <TableCell className="text-muted-foreground font-medium text-xs sm:text-sm">
                                                         {index + 1}
                                                     </TableCell>
                                                     {Object.values(item).map((value: any, i) => (
-                                                        <TableCell key={i}>
+                                                        <TableCell
+                                                            key={i}
+                                                            className="text-xs sm:text-sm"
+                                                        >
                                                             {typeof value === 'bigint'
                                                                 ? value.toString()
                                                                 : typeof value === 'symbol'
@@ -220,22 +244,22 @@ export const DataPreview = () => {
                         </ScrollArea>
                     </TabsContent>
 
-                    <TabsContent value="json" className="h-full m-0 p-4">
+                    <TabsContent value="json" className="h-full m-0 p-2 sm:p-4">
                         <CodeBlock code={formatAsJSON(generatedData)} language="json" />
                     </TabsContent>
 
-                    <TabsContent value="typescript" className="h-full m-0 p-4">
+                    <TabsContent value="typescript" className="h-full m-0 p-2 sm:p-4">
                         <CodeBlock
                             code={formatAsTypeScript(generatedData, schema)}
                             language="typescript"
                         />
                     </TabsContent>
 
-                    <TabsContent value="javascript" className="h-full m-0 p-4">
+                    <TabsContent value="javascript" className="h-full m-0 p-2 sm:p-4">
                         <CodeBlock code={formatAsJavaScript(generatedData)} language="javascript" />
                     </TabsContent>
 
-                    <TabsContent value="zod" className="h-full m-0 p-4">
+                    <TabsContent value="zod" className="h-full m-0 p-2 sm:p-4">
                         <CodeBlock code={formatAsZodSchema(schema)} language="typescript" />
                     </TabsContent>
                 </div>

@@ -27,7 +27,7 @@ const fieldTypes: FieldType[] = [
     'number',
     'boolean',
     'object',
-    'bigint',
+    // 'bigint',
     'symbol',
     'enum',
     'date',
@@ -71,12 +71,14 @@ export const SchemaBuilder = () => {
 
     return (
         <div className="flex flex-col h-full">
-            <div className="p-4 border-b">
-                <h2 className="text-lg font-semibold mb-4">{t('schemaBuilder.title')}</h2>
+            <div className="p-3 sm:p-4 border-b">
+                <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">
+                    {t('schemaBuilder.title')}
+                </h2>
 
                 {/* Add Field Form */}
-                <div className="space-y-3 py-4">
-                    <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-3 py-3 sm:py-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div className="space-y-2">
                             <Label htmlFor="field-name">{t('schemaBuilder.fieldName')}</Label>
                             <Input
@@ -122,7 +124,7 @@ export const SchemaBuilder = () => {
                     </div>
 
                     {editingField.type === 'number' && (
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div className="space-y-2">
                                 <Label htmlFor="field-min">{t('schemaBuilder.min')}</Label>
                                 <Input
@@ -158,7 +160,7 @@ export const SchemaBuilder = () => {
                         </div>
                     )}
 
-                    {editingField.type === 'bigint' && (
+                    {/* {editingField.type === 'bigint' && (
                         <div className="grid grid-cols-2 gap-3">
                             <div className="space-y-2">
                                 <Label htmlFor="bigint-min">{t('schemaBuilder.min')}</Label>
@@ -193,7 +195,7 @@ export const SchemaBuilder = () => {
                                 />
                             </div>
                         </div>
-                    )}
+                    )} */}
 
                     {editingField.type === 'enum' && (
                         <div className="space-y-2">
@@ -341,9 +343,9 @@ export const SchemaBuilder = () => {
 
                     <Button
                         onClick={handleAddField}
-                        className="w-full rounded-none hover:cursor-pointer"
+                        className="w-full rounded-none hover:cursor-pointer text-sm sm:text-base"
                     >
-                        <Plus className="w-4 h-4 mr-2" />
+                        <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
                         {t('schemaBuilder.addField')}
                     </Button>
                 </div>
@@ -354,24 +356,24 @@ export const SchemaBuilder = () => {
                 {/* Field List */}
                 <ResizablePanel defaultSize={60} minSize={30}>
                     <ScrollArea className="h-full">
-                        <div className="p-4 space-y-2 ">
+                        <div className="p-2 sm:p-4 space-y-2 ">
                             {schema.length === 0 ? (
-                                <div className="text-center py-8 text-muted-foreground">
+                                <div className="text-center py-6 sm:py-8 text-muted-foreground text-sm sm:text-base">
                                     {t('schemaBuilder.noFields')}
                                 </div>
                             ) : (
                                 schema.map((field) => (
                                     <div
                                         key={field.id}
-                                        className="flex items-center gap-2 p-3 bg-card border rounded-none hover:bg-accent/50 transition-colors"
+                                        className="flex items-center gap-2 p-2 sm:p-3 bg-card border rounded-none hover:bg-accent/50 transition-colors"
                                     >
-                                        <GripVertical className="w-4 h-4 text-muted-foreground cursor-move" />
+                                        <GripVertical className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground cursor-move shrink-0" />
                                         <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2">
-                                                <span className="font-medium truncate">
+                                            <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
+                                                <span className="font-medium truncate text-sm sm:text-base">
                                                     {field.name}
                                                 </span>
-                                                <span className="text-xs px-2 py-0.5 bg-primary/10 text-primary rounded">
+                                                <span className="text-xs px-1.5 sm:px-2 py-0.5 bg-primary/10 text-primary rounded whitespace-nowrap">
                                                     {field.isArray && field.arrayOf
                                                         ? field.arrayOf === 'object' &&
                                                           field.properties &&
@@ -446,7 +448,7 @@ export const SchemaBuilder = () => {
                 />
 
                 {/* Templates */}
-                <ResizablePanel defaultSize={40} minSize={20} maxSize={60}>
+                <ResizablePanel defaultSize={40} minSize={20} maxSize={90}>
                     <SchemaTemplates />
                 </ResizablePanel>
             </ResizablePanelGroup>

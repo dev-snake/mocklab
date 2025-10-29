@@ -14,8 +14,8 @@ export const CodeBlock = ({
     code,
     language = 'json',
     showLineNumbers = true,
-    // maxHeight = '500px',
-}: CodeBlockProps) => {
+}: // maxHeight = '500px',
+CodeBlockProps) => {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
@@ -68,7 +68,24 @@ export const CodeBlock = ({
                 return `${MARKER}${spanIndex++}${MARKER}`;
             };
 
-            // 1. Keywords first (most specific)
+            // 1. Strings with quotes FIRST (protect content inside strings including keys like "type")
+            highlighted = highlighted.replace(/"([^"]*)"/g, (_match, content) => {
+                return storeSpan(
+                    `<span class="text-green-600 dark:text-green-400">"${content}"</span>`
+                );
+            });
+            highlighted = highlighted.replace(/'([^"]*)'/g, (_match, content) => {
+                return storeSpan(
+                    `<span class="text-green-600 dark:text-green-400">'${content}'</span>`
+                );
+            });
+            highlighted = highlighted.replace(/`([^`]*)`/g, (_match, content) => {
+                return storeSpan(
+                    `<span class="text-green-600 dark:text-green-400">\`${content}\`</span>`
+                );
+            });
+
+            // 2. Keywords (after strings are protected)
             const keywords = [
                 'interface',
                 'export',
@@ -92,23 +109,6 @@ export const CodeBlock = ({
                         `<span class="text-purple-600 dark:text-purple-400 font-semibold">${match}</span>`
                     );
                 });
-            });
-
-            // 2. Strings with quotes (protect content inside strings)
-            highlighted = highlighted.replace(/"([^"]*)"/g, (_match, content) => {
-                return storeSpan(
-                    `<span class="text-green-600 dark:text-green-400">"${content}"</span>`
-                );
-            });
-            highlighted = highlighted.replace(/'([^"]*)'/g, (_match, content) => {
-                return storeSpan(
-                    `<span class="text-green-600 dark:text-green-400">'${content}'</span>`
-                );
-            });
-            highlighted = highlighted.replace(/`([^`]*)`/g, (_match, content) => {
-                return storeSpan(
-                    `<span class="text-green-600 dark:text-green-400">\`${content}\`</span>`
-                );
             });
 
             // 3. Numbers (standalone)
@@ -191,7 +191,7 @@ export const CodeBlock = ({
             </div>
 
             {/* Code content */}
-            <ScrollArea className="w-full h-[500px]" >
+            <ScrollArea className="w-full h-[500px]">
                 <div className="bg-muted/20 min-h-0">
                     <pre className="p-4 text-[13px] font-mono leading-relaxed overflow-x-auto">
                         <code className="block">

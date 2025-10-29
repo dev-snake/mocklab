@@ -63,17 +63,19 @@ export const GeneratorOptions = () => {
     ];
 
     return (
-        <div className="p-4 space-y-4 border-b bg-card">
+        <div className="p-3 sm:p-4 space-y-3 sm:space-y-4 border-b bg-card">
             <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold">{t('generatorOptions.title')}</h3>
+                <h3 className="text-sm sm:text-base font-semibold">
+                    {t('generatorOptions.title')}
+                </h3>
                 {generatedData.length > 0 && (
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-muted-foreground hidden sm:inline">
                         {t('messages.generateSuccess', { count: generatedData.length })}
                     </span>
                 )}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="space-y-2">
                     <Label htmlFor="generator-type">{t('generatorOptions.generatorType')}</Label>
                     <Select
@@ -134,11 +136,12 @@ export const GeneratorOptions = () => {
             <div className="flex gap-2">
                 <Button
                     onClick={handleGenerate}
-                    className="flex-1 rounded-none hover:cursor-pointer"
+                    className="flex-1 rounded-none hover:cursor-pointer text-sm sm:text-base"
                     disabled={schema.length === 0}
                 >
-                    <Wand2 className="w-4 h-4 mr-2" />
-                    {t('generatorOptions.generateData')}
+                    <Wand2 className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+                    <span className="hidden sm:inline">{t('generatorOptions.generateData')}</span>
+                    <span className="sm:hidden">Generate</span>
                 </Button>
 
                 {generatedData.length > 0 && (
@@ -147,15 +150,17 @@ export const GeneratorOptions = () => {
                             variant="outline"
                             className="rounded-none hover:cursor-pointer"
                             onClick={handleGenerate}
+                            size="icon"
                         >
-                            <RefreshCw className="w-4 h-4" />
+                            <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4" />
                         </Button>
                         <Button
                             variant="outline"
                             className="rounded-none hover:cursor-pointer"
                             onClick={clearData}
+                            size="icon"
                         >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                         </Button>
                     </>
                 )}
@@ -165,15 +170,15 @@ export const GeneratorOptions = () => {
             {generatedData.length > 0 && (
                 <div className="grid grid-cols-3 gap-2 pt-2">
                     <div className="text-center p-2 bg-primary/5 rounded-none select-none">
-                        <div className="text-lg font-bold">{generatedData.length}</div>
+                        <div className="text-base sm:text-lg font-bold">{generatedData.length}</div>
                         <div className="text-xs text-muted-foreground">Records</div>
                     </div>
                     <div className="text-center p-2 bg-primary/5 rounded-none select-none">
-                        <div className="text-lg font-bold">{schema.length}</div>
+                        <div className="text-base sm:text-lg font-bold">{schema.length}</div>
                         <div className="text-xs text-muted-foreground">Fields</div>
                     </div>
                     <div className="text-center p-2 bg-primary/5 rounded-none select-none">
-                        <div className="text-lg font-bold">
+                        <div className="text-base sm:text-lg font-bold">
                             {(JSON.stringify(generatedData).length / 1024).toFixed(1)}KB
                         </div>
                         <div className="text-xs text-muted-foreground">Size</div>

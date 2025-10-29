@@ -65,7 +65,11 @@
             "event": "Sự kiện/Lịch",
             "eventDesc": "Schema thông tin sự kiện",
             "company": "Công ty",
-            "companyDesc": "Schema thông tin doanh nghiệp"
+            "companyDesc": "Schema thông tin doanh nghiệp",
+            "pasteJSON": "Paste JSON",
+            "pasteJSONDesc": "Dán dữ liệu JSON mẫu hoặc schema để tự động tạo schema",
+            "pasteJSONPlaceholder": "{\n  \"id\": 1,\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\"\n}",
+            "generateSchema": "Tạo Schema"
         },
         "generatorOptions": {
             "title": "Tùy chọn tạo dữ liệu",
@@ -103,7 +107,11 @@
             "copyError": "Sao chép thất bại",
             "fieldRequired": "Trường này là bắt buộc",
             "invalidNumber": "Vui lòng nhập số hợp lệ",
-            "duplicateField": "Tên trường đã tồn tại! Vui lòng sử dụng tên khác."
+            "duplicateField": "Tên trường đã tồn tại! Vui lòng sử dụng tên khác.",
+            "emptyJSON": "Vui lòng nhập dữ liệu JSON",
+            "invalidJSON": "Dữ liệu JSON không hợp lệ",
+            "jsonParsedSuccess": "Đã tạo schema thành công từ JSON",
+            "jsonParseError": "Không thể tạo schema từ JSON"
         },
         "language": {
             "english": "Tiếng Anh",

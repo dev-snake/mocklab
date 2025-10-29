@@ -1,9 +1,13 @@
-import { FileText, User, ShoppingCart, Calendar, Database } from 'lucide-react';
+import { FileText, User, ShoppingCart, Calendar, Database, Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useMockStore } from '@/stores/mockStore';
 import type { FieldSchema } from '@/core/utils/mock-generator';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Textarea } from '@/components/ui/textarea';
+import { parseJSONToSchema, isValidJSON } from '@/core/utils/schema-parser';
+import { toast } from 'sonner';
 
 interface Template {
     name: string;
@@ -174,6 +178,8 @@ const templates: Template[] = [
 export const SchemaTemplates = () => {
     const { t } = useTranslation();
     const { setSchema } = useMockStore();
+    const [jsonInput, setJsonInput] = useState('');
+    const [showJsonInput, setShowJsonInput] = useState(false);
 
     const templatesWithTranslation: Template[] = [
         {
@@ -212,9 +218,75 @@ export const SchemaTemplates = () => {
         setSchema(template.schema);
     };
 
+    const handleParseJSON = () => {
+        if (!jsonInput.trim()) {
+            toast.error(t('messages.emptyJSON'));
+            return;
+        }
+
+        if (!isValidJSON(jsonInput)) {
+            toast.error(t('messages.invalidJSON'));
+            return;
+        }
+
+        try {
+            const schema = parseJSONToSchema(jsonInput);
+            setSchema(schema);
+            toast.success(t('messages.jsonParsedSuccess'));
+            setJsonInput('');
+            setShowJsonInput(false);
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : t('messages.jsonParseError'));
+        }
+    };
+
     return (
         <div className="p-4 pt-3 ">
-            <h3 className="text-sm font-semibold mb-3">{t('templates.title')}</h3>
+            <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold">{t('templates.title')}</h3>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowJsonInput(!showJsonInput)}
+                    className="h-7 text-xs rounded-none gap-1.5"
+                >
+                    <Upload className="w-3.5 h-3.5" />
+                    {t('templates.pasteJSON')}
+                </Button>
+            </div>
+
+            {showJsonInput && (
+                <div className="mb-3 p-3 border rounded-none bg-accent/20 space-y-2">
+                    <p className="text-xs text-muted-foreground">{t('templates.pasteJSONDesc')}</p>
+                    <Textarea
+                        value={jsonInput}
+                        onChange={(e) => setJsonInput(e.target.value)}
+                        placeholder={t('templates.pasteJSONPlaceholder')}
+                        className="h-60 font-mono text-xs rounded-none overflow-y-scroll"
+                    />
+                    <div className="flex gap-2">
+                        <Button
+                            onClick={handleParseJSON}
+                            size="sm"
+                            className="h-7 text-xs rounded-none flex-1"
+                        >
+                            {t('templates.generateSchema')}
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                setJsonInput('');
+                                setShowJsonInput(false);
+                            }}
+                            variant="outline"
+                            size="sm"
+                            className="h-7 text-xs rounded-none"
+                        >
+                            {t('common.cancel')}
+                        </Button>
+                    </div>
+                </div>
+            )}
+
             <ScrollArea className="h-[220px]">
                 <div className="space-y-2 pr-3">
                     {templatesWithTranslation.map((template) => (
