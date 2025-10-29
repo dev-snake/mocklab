@@ -544,15 +544,7 @@ export const formatAsZodSchema = (schema: FieldSchema[], schemaName = 'mockDataS
                 case 'boolean':
                     zodCode = 'z.boolean()';
                     break;
-                // case 'bigint':
-                //     zodCode = 'z.bigint()';
-                //     if (field.min !== undefined) {
-                //         zodCode += `.min(${field.min}n)`;
-                //     }
-                //     if (field.max !== undefined) {
-                //         zodCode += `.max(${field.max}n)`;
-                //     }
-                //     break;
+
                 case 'symbol':
                     zodCode = 'z.symbol()';
                     break;
